@@ -4,6 +4,7 @@ log = logging.getLogger(__name__)
 
 import random, sys
 from .func import getModel
+from .weapon import Weapon
 
 class Choice:
 	"""A class to represent an EoS character creation choice point
@@ -275,7 +276,12 @@ class Item(Choice):
 
 
 class Weapon:
-	"""A class to represent an EoS weapon"""
+	"""A class to represent an EoS weapon
+
+	Notably does NOT inherit from Choice. This class
+	exists in the rendered stage of the character, not
+	the prerender stage.
+	"""
 	def __init__(self,**kwargs):
 		self.name = kwargs['name']
 		self.range = kwargs.get('range',None)

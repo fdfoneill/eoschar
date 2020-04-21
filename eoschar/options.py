@@ -3,6 +3,7 @@ logging.basicConfig(level=os.environ.get("LOGLEVEL","INFO"))
 log = logging.getLogger(__name__)
 
 from .choice import Choice, Species, Training, Trait, Item
+from .weapon import Weapon
 from .dietype import DieType
 from .func import getModel
 

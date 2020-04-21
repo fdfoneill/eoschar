@@ -38,7 +38,8 @@ class DieType:
 		return self._sides
 
 	def __str__(self):
-		return f"d{self._sides}"d
+		return f"d{self._sides}"
+
 
 	def improve(self):
 		"""Decrease _sides by one category
@@ -47,6 +48,8 @@ class DieType:
 		otherwise returns True.
 
 		"""
+		if self._sides == 4:
+			return False
 		for i in range(len(self._valid)):
 			if self._sides == self._valid[i]:
 				try:

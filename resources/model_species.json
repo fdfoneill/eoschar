@@ -1,0 +1,88 @@
+{
+	"human":{"name":"Human",
+		"base_stats":{
+			"brawn":10,
+			"grace":10,
+			"wits":10,
+			"spirit":10
+		},
+		"Species Traits":[
+			{"name":"Brawn Bonus",
+				"description":"+1 die type in Brawn (already included)"
+			},
+			{"name":"Grace Bonus",
+				"description":"+1 die type in Grace (already included)"
+			},
+			{"name":"Wits Bonus",
+				"description":"+1 die type in Wits (already included)"
+			},
+			{"name":"Spirit Bonus",
+				"description":"+1 die type in Spirit (already included)"
+			}
+		]
+	},
+	"elek":{"name":"Elek",
+		"base_stats":{
+			"brawn":12,
+			"grace":10,
+			"wits":8,
+			"spirit":10
+		},
+		"Species Traits":[
+			{"name":"Vian Moves Slowly",
+				"description":"If a Wits test would be notably improved by faster problem solving, get an extra die type on your roll"
+			},
+			{"name":"Unrivaled Reaction",
+				"description":"If a Grace check would be notably improved by a faster reaction time, get an extra die type on your roll"
+			}
+		]
+	},
+	"primas_ika":{"name":"Primas-Ika",
+		"base_stats":{
+			"brawn":8,
+			"grace":10,
+			"wits":12,
+			"spirit":10
+		},
+		"Species Traits":[
+			{"name":"Clanspeak",
+				"description":"You can call upon the aid of your Clan. The Clan may be able to offer food, shelter, or even (if it is a particularly pressing matter of Clan survival) combat assistance"
+			},
+			{"name":"Clanless",
+				"description":"You may add one bonus die to any roll made to intimidate, due to the fearsome reputation of exiles (this only works if the intimidated knows you are a clanless Primas-ika)"
+			}
+		]
+	},
+	"yasre":{"name":"Yasre",
+		"base_stats":{
+			"brawn":10,
+			"grace":8,
+			"wits":10,
+			"spirit":12
+		},
+		"Species Traits":[
+			{"name":"By His Righteous Code",
+				"description":"You are viewed favorably by combatants that might be likely to surrender, since they know they will find mercy"
+			},
+			{"name":"The Old Hunger",
+				"description":"You must make a Spirit Roll when entering combat. On a failure, you get an extra die type for all fight rolls made, but must always choose to 'Go For the Kill'"
+			}
+		]
+	},
+	"parathan":{"name":"Parathan",
+		"base_stats":{
+			"brawn":10,
+			"grace":12,
+			"wits":10,
+			"spirit":8
+		},
+		"Species Traits":[
+			{"name":"Preservationist Power",
+				"description":"Add +1 to all TNs for casting spells."
+			},
+			{"name":"Survivalist Presence",
+				"description":"Add one die to rolls made to negotiate."
+			}
+		]
+	}
+}

@@ -1,0 +1,30 @@
+"Training":[
+	{"name":"Martial",
+		"description":"",
+		"Training Trait":{
+			"name":"Combat Ready",
+			"description":"Once per combat, you may discard one Exertion Counter"
+		}
+	},
+	{"name":"Underworld",
+		"description":"",
+		"Training Trait":{
+			"name":"I Know a Guy",
+			"description":"Once per session, you may make a Spirit roll to invoke a contact (previously introduced or new) that can help you in your current situation. On a failure, the contact still comes up, but you two aren’t on good terms"
+		}
+	},
+	{"name":"Magic",
+		"description":"",
+		"Training Trait":{
+			"name":"Chosen",
+			"description":"You may use spells from the General Spell List"
+		}
+	},
+	{"name":"Technology",
+		"description":"",
+		"Training Trait":{
+			"name":"Workstation",
+			"description":"Once per session, you may (if given enough time) make a Wits roll to fashion a minor invention based on your Focus. On a failure, the device may malfunction on use (with potential risk for more volatile creations)"
+		}
+	}
+]

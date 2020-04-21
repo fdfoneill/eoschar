@@ -3,6 +3,7 @@ logging.basicConfig(level=os.environ.get("LOGLEVEL","INFO"))
 log = logging.getLogger(__name__)
 
 import random, sys
+from .func import getModel
 
 class Choice:
 	"""A class to represent an EoS character creation choice point
@@ -59,6 +60,9 @@ class Choice:
 	coerceChildrenCategory: bool
 		Changes 'category' attribute of each Choice in children
 		to match this Choice's child_category.
+	display: None
+		Print visualization of Choice and its descendants as 
+		a tree, with Choice as the root node
 	getChildren(): bool
 		Generator that yields the name attribute for each child
 		in children.
@@ -74,7 +78,7 @@ class Choice:
 		self.children_category = kwargs.get("children_category",None)
 		self.name = kwargs.get("name",None)
 		self.prerequisites = kwargs.get("prerequisites",{})
-		self.root_id = kwargs.get("root_id",{})
+		self.root_id = kwargs.get("root_id",None)
 		self.unique = kwargs.get("unique",{})
 
 	def __repr__(self):
@@ -85,7 +89,26 @@ class Choice:
 			childType = "1 child"
 		else:
 			childType = f"{len(self.children)} children"
-		return f"<Instance of Choice: '{self.name}', {childType}, {nodeType}>"
+		if self.root_id is None:
+			tree = "no tree"
+		else:
+			tree = f"tree {self.root_id}"
+		return f"<Instance of Choice, {tree} | {nodeType} : '{self.name}', {childType}>"
+
+	def display(self,level=0):
+		if level==0:
+			if self.category is not None:
+				outString = f"{self.name} ({self.category})"
+			else:
+				outString = self.name
+		else:
+			if self.category is not None:
+				outString = ("| " * (level-1)) + "|-" + f"{self.name} ({self.category})"
+			else:
+				outString = ("| " * (level-1)) + "|-" + f"{self.name}"
+		print(outString)
+		for child in self.children:
+			child.display(level=level+1)
 
 	def addChild(self,new_child):
 		"""Append a child Choice to self.children
@@ -122,8 +145,18 @@ class Choice:
 			child.cascadeRootId(override_root=True)
 		return True
 	
-	def implement(self,character_sheet) -> bool:
+	def implement(self,character_sheet,*args,**kwargs) -> bool:
 		pass
+
+	def addImplementation(self,new_function) -> bool:
+		"""Adds new behavior to end of implement() function
+		"""
+		oldImplement = self.implement
+		def newImplement(*args,**kwargs):
+			oldImplement(*args,**kwargs)
+			new_function(*args,**kwargs)
+		self.implement= newImplement
+		return True
 
 	def getChildren(self) -> bool:
 		"""Returns a list of 'name' for each child in self.children"""
@@ -145,11 +178,109 @@ class Choice:
 			return False
 
 
-class Item(Choice):
-	"""A class to represent an EoS gear item
+class Species(Choice):
+	"""A class to represent an EoS species option
 	
+	***
+
+	Attributes
+	----------
+	base_qualities:dict
+	speed: str
 
 	"""
-	def __init__(self):
-		self.__super__.__init__()
-		self.category="Gear Item"
+	def __init__(self,base_qualities={"Brawn":10,"Grace":10,"Wits":10,"Spirit":10},speed="15 yards",**kwargs):
+		super().__init__(**kwargs)
+		self.base_qualities = base_qualities
+		self.speed=speed
+
+	def implement(self,character_sheet,*args,**kwargs) -> bool:
+		for q in self.base_qualities.keys():
+			character_sheet.qualities[q] = DieType(self.base_qualities[q])
+		character_sheet.combat_stats['Speed'] = self.speed
+		return True
+
+
+class Training(Choice):
+	"""A class to represent an EoS Training
+
+	***
+
+	Attributes
+	----------
+
+	"""
+	def __init__(self,**kwargs):
+		super().__init__(**kwargs)
+		self.skill = kwargs['skill'] # str
+		self.gear = kwargs.get('gear',[]) # list
+
+	def implement(self,character_sheet,*args,**kwargs) ->bool:
+		model = getModel('model_training.json')[self.name]
+		character_sheet.skills[self.skill][level] += 1
+		for item in self.gear:
+			character_sheet.gear.append(item)
+		character_sheet.traits.append({"Name":model["Training Trait"]["name"],"Description":model["Training Trait"]["description"]})
+
+
+class Trait(Choice):
+	"""A class to represent an EoS Trait
+
+	***
+
+	Attributes
+	----------
+
+	"""
+	def __init__(self,description,**kwargs):
+		super().__init__(**kwargs)
+		self.description = description
+
+	def implement(self,character_sheet,*args,**kwargs) -> bool:
+		character_sheet.traits.append({"Name":self.name,"Description":self.description})
+
+
+class Item(Choice):
+	"""A class to represent an item of EoS gear"""
+	def __init__(self,**kwargs):
+		super().__init__(**kwargs)
+		self.gear_type = kwargs.get("gear_type","general")
+		self.level = kwargs.get("level","A")
+		self.abstract=kwargs.get("abstract",False)
+		self.item_name = kwargs.get("item_name",self.name)
+		self.n=kwargs.get("n",1)
+		if self.gear_type == "weapon":
+			profile = Weapon(**getModel("model_weapons.json")[self.item_name])
+
+	def implement(self,character_sheet,*args,**kwargs):
+		if self.abstract:
+			if self.gear_type=="potion":
+				character_sheet._abstract_potions[self.level]+=self.n
+			elif self.gear_type == "ammunition":
+				character_sheet._abstract_ammunition[self.level]+=self.n
+			elif self.gear_type == "modification":
+				character_sheet._abstract_modifications[self.level]+=self.n
+			elif self.gear_type == "weapon":
+				character_sheet._abstract_weapons.append(self.profile)
+			elif self.gear_type == "grenade":
+				character_sheet._abstract_grenades[self.level]+=self.n
+			else:
+				raise SyntaxError(f"No such thing as an abstract '{self.gear_type}'. Must be one of 'potion', 'ammunition', 'weapon', or 'modification'.")
+		elif self.gear_type == "weapon":
+			character_sheet.weapons.append(self.profile)
+		elif self.gear_type == "custom":
+			pass
+		else:
+			character_sheet.gear.append(self.item_name)
+
+
+class Weapon:
+	"""A class to represent an EoS weapon"""
+	def __init__(self,**kwargs):
+		self.name = kwargs['name']
+		self.range = kwargs.get('range',None)
+		self.reach = kwargs.get('reach',None)
+		if self.range is None and self.reach is None:
+			self.reach = 1
+		self.ap = kwargs.get("ap",1)
+		self.special=[kwargs.get("special",None)]

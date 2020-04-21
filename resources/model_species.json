@@ -1,10 +1,10 @@
 {
-	"human":{"name":"Human",
-		"base_stats":{
-			"brawn":10,
-			"grace":10,
-			"wits":10,
-			"spirit":10
+	"Human":{"name":"Human",
+		"base_qualities":{
+			"Brawn":10,
+			"Brace":10,
+			"Wits":10,
+			"Spirit":10
 		},
 		"Species Traits":[
 			{"name":"Brawn Bonus",
@@ -21,12 +21,12 @@
 			}
 		]
 	},
-	"elek":{"name":"Elek",
-		"base_stats":{
-			"brawn":12,
-			"grace":10,
-			"wits":8,
-			"spirit":10
+	"Elek":{"name":"Elek",
+		"base_qualities":{
+			"Brawn":12,
+			"Grace":10,
+			"Wits":8,
+			"Spirit":10
 		},
 		"Species Traits":[
 			{"name":"Vian Moves Slowly",
@@ -37,12 +37,12 @@
 			}
 		]
 	},
-	"primas_ika":{"name":"Primas-Ika",
-		"base_stats":{
-			"brawn":8,
-			"grace":10,
-			"wits":12,
-			"spirit":10
+	"Primas-Ika":{"name":"Primas-Ika",
+		"base_qualities":{
+			"Brawn":8,
+			"Grace":10,
+			"Wits":12,
+			"Spirit":10
 		},
 		"Species Traits":[
 			{"name":"Clanspeak",
@@ -53,12 +53,12 @@
 			}
 		]
 	},
-	"yasre":{"name":"Yasre",
-		"base_stats":{
-			"brawn":10,
-			"grace":8,
-			"wits":10,
-			"spirit":12
+	"Yasre":{"name":"Yasre",
+		"base_qualities":{
+			"Brawn":10,
+			"Grace":8,
+			"Wits":10,
+			"Spirit":12
 		},
 		"Species Traits":[
 			{"name":"By His Righteous Code",
@@ -69,12 +69,12 @@
 			}
 		]
 	},
-	"parathan":{"name":"Parathan",
-		"base_stats":{
-			"brawn":10,
-			"grace":12,
-			"wits":10,
-			"spirit":8
+	"Parathan":{"name":"Parathan",
+		"base_qualities":{
+			"Brawn":10,
+			"Grace":12,
+			"Wits":10,
+			"Spirit":8
 		},
 		"Species Traits":[
 			{"name":"Preservationist Power",

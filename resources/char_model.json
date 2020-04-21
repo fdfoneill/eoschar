@@ -1,0 +1,309 @@
+reference = {"species": {
+	"human":{"name":"Human",
+		"base_stats":{
+			"brawn":10,
+			"grace":10,
+			"wits":10,
+			"spirit":10
+		},
+		"race_traits":{
+			"1":{"name":"Brawn Bonus",
+				"description":"+1 die type in Brawn (already included)"
+			},
+			"2":{"name":"Grace Bonus",
+				"description":"+1 die type in Grace (already included)"
+			},
+			"3":{"name":"Wits Bonus",
+				"description":"+1 die type in Wits (already included)"
+			},
+			"4":{"name":"Spirit Bonus",
+				"description":"+1 die type in Spirit (already included)"
+			}
+		}
+	},
+	"elek":{"name":"Elek",
+		"base_stats":{
+			"brawn":12,
+			"grace":10,
+			"wits":8,
+			"spirit":10
+		},
+		"race_traits":{
+			"1":{"name":"Vian Moves Slowly",
+				"description":"If a Wits test would be notably improved by faster problem solving, get an extra die type on your roll"
+			},
+			"2":{"name":"Unrivaled Reaction",
+				"description":"If a Grace check would be notably improved by a faster reaction time, get an extra die type on your roll"
+			}
+		}
+	},
+	"primas_ika":{"name":"Primas-Ika",
+		"base_stats":{
+			"brawn":8,
+			"grace":10,
+			"wits":12,
+			"spirit":10
+		},
+		"race_traits":{
+			"1":{"name":"Clanspeak",
+				"description":"You can call upon the aid of your Clan. The Clan may be able to offer food, shelter, or even (if it is a particularly pressing matter of Clan survival) combat assistance"
+			},
+			"2":{"name":"Clanless",
+				"description":"You may add one bonus die to any roll made to intimidate, due to the fearsome reputation of exiles (this only works if the intimidated knows you are a clanless Primas-ika)"
+			}
+		}
+	},
+	"yasre":{"name":"Yasre",
+		"base_stats":{
+			"brawn":10,
+			"grace":8,
+			"wits":10,
+			"spirit":12
+		},
+		"race_traits":{
+			"1":{"name":"By His Righteous Code",
+				"description":"You are viewed favorably by combatants that might be likely to surrender, since they know they will find mercy"
+			},
+			"2":{"name":"The Old Hunger",
+				"description":"You must make a Spirit Roll when entering combat. On a failure, you get an extra die type for all fight rolls made, but must always choose to 'Go For the Kill'"
+			}
+		}
+	},
+	"parathan":{"name":"Parathan",
+		"base_stats":{
+			"brawn":10,
+			"grace":12,
+			"wits":10,
+			"spirit":8
+		},
+		"race_traits":{
+			"1":{"name":"Preservationist Power",
+				"description":"Add +1 to all TNs for casting spells."
+			},
+			"2":{"name":"Survivalist Presence",
+				"description":"Add one die to rolls made to negotiate."
+			}
+		}
+	}
+}, "training":{
+	"martial":{"name":"Martial",
+		"description":"",
+		"trait":{
+			"name":"Combat Ready",
+			"description":"Once per combat, you may discard one Exertion Counter"
+		},
+		"foci":[
+			{"name":"Soldier",
+				"description":"",
+				"trait":{
+					"name":"Unit Cohesion",
+					"description":""
+				}
+			},
+			{"name":"Officer",
+				"description":"",
+				"trait":{
+					"name":"",
+					"description":""
+				}
+			},
+			{"name":"Medic",
+				"description":"",
+				"trait":{
+					"name":"",
+					"description":""
+				}
+			}
+		]
+	},
+	"underworld":{"name":"Underworld",
+		"description":"",
+		"trait":{
+			"name":"I Know a Guy",
+			"description":"Once per session, you may make a Spirit roll to invoke a contact (previously introduced or new) that can help you in your current situation. On a failure, the contact still comes up, but you two aren’t on good terms"
+		},
+		"foci":[
+			{"name":"Hunter (Assassin)",
+				"description":"",
+				"trait":{
+					"name":"",
+					"description":""
+				}
+			},
+			{"name":"Locksmith (Thief)",
+				"description":"",
+				"trait":{
+					"name":"",
+					"description":""
+				}
+			},
+			{"name":"Courier (Spy)",
+				"description":"",
+				"trait":{
+					"name":"",
+					"description":""
+				}
+			}
+		]
+	},
+	"magic":{"name":"Magic",
+		"description":"",
+		"trait":{
+			"name":"Chosen",
+			"description":"You may use spells from the General Spell List"
+		},
+		"foci":[
+			{"name":"Mage",
+				"description":"",
+				"trait":{
+					"name":"",
+					"description":""
+				}
+			},
+			{"name":"Champion",
+				"description":"",
+				"trait":{
+					"name":"",
+					"description":""
+				}
+			},
+			{"name":"Alchemage",
+				"description":"",
+				"trait":{
+					"name":"",
+					"description":""
+				}
+			}
+		]
+	},
+	"technology":{"name":"Technology",
+		"description":"",
+		"trait":{
+			"name":"Workstation",
+			"description":"Once per session, you may (if given enough time) make a Wits roll to fashion a minor invention based on your Focus. On a failure, the device may malfunction on use (with potential risk for more volatile creations)"
+		},
+		"foci":[
+			{"name":"Alchemist",
+				"description":"",
+				"trait":{
+					"name":"Scholar of the Fabric",
+					"description":"+2 dice to any attempt to identify alchemical devices and brews"
+				}
+			},
+			{"name":"Engineer",
+				"description":"",
+				"trait":{
+					"name":"Give it a Whack",
+					"description":"+2 dice to get a reasonably understandable mechanical device working"
+				}
+			},
+			{"name":"Operator",
+				"description":"",
+				"trait":{
+					"name":"Attuned Familiar",
+					"description":"You gain a drone with the following profile:\nDrone\nBrawn d12, Grace d10, Wits d10, and Spirit d12\nSkills: Perception (3),\nGear: Repulsor pads, Comms and Loudspeaker, Flashlight"
+				}
+			}
+		]
+	}
+}, "specialty":{
+	"melee":{"name":"Close Combat",
+		"description":"",
+		"traits":[
+		]
+	},
+	"ranged":{"name":"Ranged",
+		"description":"",
+		"traits":[
+		]
+	},
+	"tactician":{"name":"Tactician",
+		"description":"",
+		"traits":[
+		]
+	},
+	"healer":{"name":"Healer",
+		"description":"",
+		"traits":[
+		]
+	}
+}, "background":[
+	{"name":"Waster",
+		"description":"",
+		"trait":{
+			"name":"Greylung",
+			"description":"You treat your brawn as one die type better for rolls made to resist exposure to the elements"
+		}
+	},
+	{"name":"Ash Farmer",
+		"description":"",
+		"trait":{
+			"name":"Green from the Grey",
+			"description":"You have an aptitude for plants from the Wastes, and given enough time and the right supplies can cultivate food"
+		}
+	},
+	{"name":"Urchin",
+		"description":"",
+		"trait":{
+			"name":"Work the Crowd",
+			"description":"You can add a die type to any roll made to hide in a large group of people"
+		}
+	},
+	{"name":"Corporate",
+		"description":"",
+		"trait":{
+			"name":"Talk the Talk",
+			"description":"You can raise your die type for any roll involving corporate bureaucracy or etiquette"
+		}
+	},
+	{"name":"Scholar",
+		"description":"",
+		"trait":{
+			"name":"",
+			"description":""
+		}
+	},
+	{"name":"Chosen",
+		"description":"",
+		"trait":{
+			"name":"",
+			"description":""
+		}
+	},
+	{"name":"Scion",
+		"description":"",
+		"trait":{
+			"name":"",
+			"description":""
+		}
+	},
+	{"name":"Bound",
+		"description":"",
+		"trait":{
+			"name":"",
+			"description":""
+		}
+	},
+	{"name":"Militia",
+		"description":"",
+		"trait":{
+			"name":"",
+			"description":""
+		}
+	},
+	{"name":"Conscript",
+		"description":"",
+		"trait":{
+			"name":"",
+			"description":""
+		}
+	},
+	{"name":"Military",
+		"description":"",
+		"trait":{
+			"name":"",
+			"description":""
+		}
+	}
+]
+}

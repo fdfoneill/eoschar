@@ -1,0 +1,19 @@
+__pycache__
+python-virtual-environments
+venv
+temp/
+
+# distribution / packaging
+bin/
+build/
+develop-eggs/
+dist/
+eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg_info/
+.installed.cfg
+*.egg

@@ -2,6 +2,7 @@ __pycache__
 python-virtual-environments
 venv
 temp/
+.DS_Store
 
 # distribution / packaging
 bin/

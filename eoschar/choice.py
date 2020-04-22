@@ -222,6 +222,20 @@ class Training(Choice):
 		for item in self.gear:
 			character_sheet.gear.append(item)
 		character_sheet.traits.append({"Name":model["Training Trait"]["name"],"Description":model["Training Trait"]["description"]})
+		return True
+
+
+class Focus(Choice):
+	"""A class to represent an EoS character Focus"""
+	def __init__(self,**kwargs):
+		super().__init__(**kwargs)
+		self.skills = kwargs['skills']
+		self.trait = kwargs['trait']
+
+	def implement(self,character_sheet,*args,**kwargs) -> bool:
+		for s in self.skills:
+			character_sheet.skills[s].level += 1
+		character_sheet.traits.append({"Name":self.trait["name"],"Description":self.trait["description"]})
 
 
 class Trait(Choice):
@@ -239,6 +253,17 @@ class Trait(Choice):
 
 	def implement(self,character_sheet,*args,**kwargs) -> bool:
 		character_sheet.traits.append({"Name":self.name,"Description":self.description})
+		return True
+
+
+class CombatSpecialty(Choice):
+	"""A class to represent an EoS Combat Specialty"""
+	def __init__(self,**kwargs):
+		super().__init__(**kwargs)
+		self.traits = kwargs['traits']
+
+	def implement(self,character_sheet,*ags,**kwargs) -> bool:
+		return True
 
 
 class Item(Choice):
@@ -274,19 +299,3 @@ class Item(Choice):
 		else:
 			character_sheet.gear.append(self.item_name)
 
-
-class Weapon:
-	"""A class to represent an EoS weapon
-
-	Notably does NOT inherit from Choice. This class
-	exists in the rendered stage of the character, not
-	the prerender stage.
-	"""
-	def __init__(self,**kwargs):
-		self.name = kwargs['name']
-		self.range = kwargs.get('range',None)
-		self.reach = kwargs.get('reach',None)
-		if self.range is None and self.reach is None:
-			self.reach = 1
-		self.ap = kwargs.get("ap",1)
-		self.special=[kwargs.get("special",None)]

@@ -2,14 +2,16 @@ import logging, os
 logging.basicConfig(level=os.environ.get("LOGLEVEL","INFO"))
 log = logging.getLogger(__name__)
 
-from .choice import Choice, Species, Training, Trait, Item
+from .choice import Choice, Species, Training, Focus, Trait, Item
 from .weapon import Weapon
 from .dietype import DieType
 from .func import getModel
 
-##############
-# species tree
-##############
+trees = []
+
+#########
+# species
+#########
 
 species_model = getModel("model_species.json")
 species = Choice(name="Species",children_category="Species",root_id=1)
@@ -60,9 +62,10 @@ for t in species_model['Yasre']["Species Traits"]:
 ## add as a child to species
 species.addChild(yasre)
 
-# cascade
+# cascade and append
 species.cascadeRootId()
 species.cascadeChildrenCategory()
+trees.append(species)
 
 
 ########
@@ -75,9 +78,28 @@ for q in getModel("model_qualities.json"): # add all human traits
 	tlnt = Choice(name=q)
 	tlnt.addImplementation(lambda character_sheet: character_sheet.qualities[q].improve())
 	talent.addChild(tlnt)
-# cascade
+
+# cascade and append
 talent.cascadeRootId()
 talent.cascadeChildrenCategory()
+trees.append(talent)
+
+
+#####################
+# shooting & fighting
+#####################
+
+shooting_fighting = Choice(name="Shooting and Fighting Dice",children_category="Die to Boost",root_id=7)
+# add two options
+for d in ["Shooting Die","Fighting Die"]:
+	sfo = Choice(name=d)
+	sfo.addImplementation(lambda character_sheet: character_sheet.combat_stats[d].improve())
+	shooting_fighting.addChild(sfo)
+
+# cascade and append
+shooting_fighting.cascadeRootId()
+shooting_fighting.cascadeChildrenCategory()
+trees.append(shooting_fighting)
 
 
 ##########
@@ -134,15 +156,26 @@ technology.addChild(tgc2)
 ## add as child to training
 training.addChild(technology)
 
-# cascade
+# cascade and append
 training.cascadeRootId()
 training.cascadeChildrenCategory()
+trees.append(training)
+
 
 #######
 # focus
 #######
 
 focus = Choice(name="Focus",children_category="Focus",root_id=4)
+
+# add individual foci
+for f in getModel('model_focus.json'):
+	focus.addChild(Focus(name=f['name'],skills=f['skills'],trait=f['trait']))
+
+# cascade and append
+focus.cascadeRootId()
+focus.cascadeChildrenCategory()
+trees.append(focus)
 
 
 ##################
@@ -151,9 +184,23 @@ focus = Choice(name="Focus",children_category="Focus",root_id=4)
 
 combat_specialty = Choice(name="Combat Specialty",children_category="Combat Specialty",root_id=5)
 
+# add individual specialties
+for s in getModel('model_combat_specialty.json'):
+	pass
+
+# cascade and append
+combat_specialty.cascadeRootId()
+combat_specialty.cascadeChildrenCategory()
+trees.append(combat_specialty)
+
 
 ############
 # background
 ############
 
 background = Choice(name="Background",children_category="Background",root_id=6)
+
+# cascade and append
+background.cascadeRootId()
+background.cascadeChildrenCategory()
+trees.append(background)

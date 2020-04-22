@@ -58,7 +58,7 @@ Character fully generated.
 
 Once the package is fully installed, call `eoschar new` from the command line. The interface will then guide you through the process of creating an Era of Silence character from scratch! You can exit the program at any time by typing 'exit.' To save an in-progress character, type 'save.'
 
-Once you have created your character, you can save the data to a file as pickled text. Previously created characters can be loaded with the `eoschar load` command. Completed characters can also be saved as beautiful PDF character sheets, although this format does not allow for re-loading into `eoschar`. 
+Once you have created your character, you can save the data to a file as pickled text. Previously created characters can be loaded with the `eoschar load` command. Completed characters can also be saved as beautiful PDF character sheets, although this format does not allow for re-loading into `eoschar`.
 
 # License
 

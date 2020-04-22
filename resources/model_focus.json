@@ -1,0 +1,112 @@
+[
+	{"name":"Grunt",
+		"skills":[
+			"Drive",
+			"Resist Physical"
+		],
+		"trait":{
+			"name":"Unit Cohesion",
+			"description":"Once per session, when you end your turn, you may choose an ally within 10 yards. whom you can see and who has not yet taken their turn this round. They may make a TN 6 Spirit roll; on a success, they may immediately take their turn."
+		}
+	},
+	{"name":"Officer",
+		"skills":[
+			"Persuade",
+			"Ride"
+		],
+		"trait":{
+			"name":"Orders",
+			"description":"Once per session, spend 1 Stamina Counter. One ally within 30 feet whom you can see may immediately gain 1 Stamina Counter."
+		}
+	},
+	{"name":"Medic",
+		"skills":[
+			"Heal",
+			"Resist Physical"
+		],
+		"trait":{
+			"name":"Corpsman",
+			"description":"Whenever you must roll on the Yender’s Formula mishap table, you may choose to reroll your result. You may never reroll more than once."
+		}
+	},
+	{"name":"Hunter",
+		"skills":[
+			"Alertness",
+			"Stealth"
+		],
+		"trait":{
+			"name":"Assassin",
+			"description":"Once per session when attacking a target who is unaware of you (either because they are Off Guard or because you were hidden before the attack) you may add 2 dice to your roll to hit (at range) or your Fight Roll (in combat)."
+		}
+	},
+	{"name":"Locksmith",
+		"skills":[
+			"Appraise",
+			"Security"
+		],
+		"trait":{
+			"name":"No Doors",
+			"description":"Once per session, add 2 dice to any attempt to enter or exit a locked location, whether physical or digital (jail, vault, password-protected computer, etc)."
+		}
+	},
+	{"name":"Courier",
+		"skills":[
+			"Search",
+			"Stealth"
+		],
+		"trait":{
+			"name":"That Kind of Face",
+			"description":"Once per session add 2 dice to any attempt to appear like you belong in a location, or to convince someone that you belong there (for example, to convince a guard at a secure facility that you are an employee who has forgotten their badge)."
+		}
+	},
+	{"name":"Mage",
+		"skills":[
+			"Research",
+			"Use Magic"
+		],
+		"trait":{
+			"name":"Noverre's Sight",
+			"description":"You can cast spells. Additionally, you have the ability to see spells and auras as vibrating threads. You can accurately identify any magical effect that you have seen before, and identify the general nature of any magical effect you have not seen before."
+		}
+	},
+	{"name":"Champion",
+		"skills":[
+			"Judge",
+			"Persuade"
+		],
+		"trait":{
+			"name":"Holy Weapon",
+			"description":"You can cast offensive magic. When you do so, you must choose a melee weapon you are currently wielding. The spell’s Stamina cost is reduced by 1, and it is stored in the chosen weapon instead of being cast normally. The next time you Go For the Kill using that weapon, the stored spell is discharged instead of the weapon’s normal effects. The discharged spell may only target foes with whom you are In Combat, but it hits automatically. You can store up to 3 spells at a time with this trait. A weapon can only hold one spell at a time."
+		}
+	},
+	{"name":"Alchemist",
+		"skills":[
+			"Alchemy",
+			"Resist Physical"
+		],
+		"trait":{
+			"name":"More than Mortal",
+			"description":"Your character begins play with an augment (see Equipment and Services- Augments) with a MAX cost of 5000 or less."
+		}
+	},
+	{"name":"Engineer",
+		"skills":[
+			"Repair",
+			"Security"
+		],
+		"trait":{
+			"name":"Needs Some Work",
+			"description":"You start the game with an old machine exoskeleton that could be improved into a suit of powerful armor. See the rulebook for details."
+		}
+	},
+	{"name":"Operator",
+		"skills":[
+			"Repair",
+			"Stealth"
+		],
+		"trait":{
+			"name":"Attuned Familiar",
+			"description":"You gain a drone companion. See the rulebook for details."
+		}
+	}
+]

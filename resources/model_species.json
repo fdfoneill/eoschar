@@ -45,11 +45,11 @@
 			"Spirit":10
 		},
 		"Species Traits":[
-			{"name":"Clanspeak",
-				"description":"You can call upon the aid of your Clan. The Clan may be able to offer food, shelter, or even (if it is a particularly pressing matter of Clan survival) combat assistance"
+			{"name":"Rank and File",
+				"description":"You can call upon the aid of your unit, whether of the Clan or the Holy Legions (though you must pick which). The force may be able to offer food, shelter, or even (if it is a particularly pressing matter of Clan/Church survival) combat assistance."
 			},
-			{"name":"Clanless",
-				"description":"You may add one bonus die to any roll made to intimidate, due to the fearsome reputation of exiles (this only works if the intimidated knows you are a clanless Primas-ika)"
+			{"name":"Unaffiliated",
+				"description":"You may add one bonus die to any roll made to intimidate, due to the fearsome reputation of exiles (this only works if the intimidated knows you are a Primas-ika)."
 			}
 		]
 	},
@@ -62,10 +62,10 @@
 		},
 		"Species Traits":[
 			{"name":"By His Righteous Code",
-				"description":"You are viewed favorably by combatants that might be likely to surrender, since they know they will find mercy"
+				"description":"You are viewed favorably by combatants that might be likely to surrender, since they know they will find mercy."
 			},
 			{"name":"The Old Hunger",
-				"description":"You must make a Spirit Roll when entering combat. On a failure, you get an extra die type for all fight rolls made, but must always choose to 'Go For the Kill'"
+				"description":"You must make a Spirit Roll when entering combat. On a failure, you get an extra die type for all fight rolls made, but must always choose to 'Go For the Kill' if you are the winner."
 			}
 		]
 	},
@@ -81,7 +81,7 @@
 				"description":"Add +1 to all TNs for casting spells."
 			},
 			{"name":"Survivalist Presence",
-				"description":"Add one die to rolls made to negotiate."
+				"description":"Add one die to rolls made to Persuade."
 			}
 		]
 	}

@@ -1,38 +1,55 @@
-[
-	{"name":"Close Combat",
+{
+	"Close Combat":{"name":"Close Combat",
 		"description":"",
 		"traits":[
-			{"name":"Duellist",
-			"description":"Your Fighting Die type improves by 1 (already included)"},
-			{"name":"Exhilarating Strike",
-			"description":"When you take the Go for the Kill action, you gain one Stamina Counter immediately after resolving damage."}
+			{"Name":"Duellist",
+			"Description":"Your Fighting Die type improves by 1 (already included)"},
+			{"Name":"Exhilarating Strike",
+			"Description":"When you take the Go for the Kill action, you gain one Stamina Counter immediately after resolving damage."}
+		],
+		"gear":[
+			"! weapon Pistol",
+			"Dose of Yender’s Formula",
+			"! abstract weapon Melee"
 		]
 	},
-	{"name":"Ranged",
+	"Ranged":{"name":"Ranged",
 		"description":"",
 		"traits":[
-			{"name":"Sureshot",
-			"description":"Your Shooting Die type improves by 1 (already included)"},
-			{"name":"Aim, Fire",
-			"description":"Before you take any actions on your turn, you may declare that you are using this trait. If you do so, you gain an additional die for all your ranged attack rolls (shooting or magic) until the end of your turn, but you may not take any action except to shoot or cast a ranged spell attack."}
+			{"Name":"Sureshot",
+			"Description":"Your Shooting Die type improves by 1 (already included)"},
+			{"Name":"Aim, Fire",
+			"Description":"Before you take any actions on your turn, you may declare that you are using this trait. If you do so, you gain an additional die for all your ranged attack rolls (shooting or magic) until the end of your turn, but you may not take any action except to shoot or cast a ranged spell attack."}
+		],
+		"gear":[
+			"! weapon Pistol",
+			"Dose of Yender’s Formula"
 		]
 	},
-	{"name":"Tactician",
+	"Tactician":{"name":"Tactician",
 		"description":"",
 		"traits":[
-			{"name":"Get Back in the Fight",
-			"description":"During the “Change State/Armament” portion of your turn, you may choose up to three allies within 10 yards of you whom you can see. Those allies may each make a Difficulty 6 Spirit roll. On a success, they may immediately change their State as if it were their turn. This trait applies regardless of whether or not you choose to change your own State or armament."},
-			{"name":"Suppressing Fire",
-			"description":"When you take the Shoot action or cast a ranged spell attack, you may declare that you are providing suppressing fire. If you do so, choose up to twice as many targets as usual. Targets may become Pinned as normal; however, the attack then ends (i.e. no hit rolls are made, no damage is rolled). This trait may not be used when firing Overwatch."}
+			{"Name":"Get Back in the Fight",
+			"Description":"During the “Change State/Armament” portion of your turn, you may choose up to three allies within 10 yards of you whom you can see. Those allies may each make a Difficulty 6 Spirit roll. On a success, they may immediately change their State as if it were their turn. This trait applies regardless of whether or not you choose to change your own State or armament."},
+			{"Name":"Suppressing Fire",
+			"Description":"When you take the Shoot action or cast a ranged spell attack, you may declare that you are providing suppressing fire. If you do so, choose up to twice as many targets as usual. Targets may become Pinned as normal; however, the attack then ends (i.e. no hit rolls are made, no damage is rolled). This trait may not be used when firing Overwatch."}
+		],
+		"gear":[
+			"! weapon Pistol",
+			"Dose of Yender’s Formula"
 		]
 	},
-	{"name":"Healer",
+	"Healer":{"name":"Healer",
 		"description":"",
 		"traits":[
-			{"name":"Field Dressing",
-			"description":"You do not need to spend Stamina when making your first Heal check on each turn. Any additional Heal checks require that you spend Stamina as normal."},
-			{"name":"Autostimm",
-			"description":"The first time during a battle that you start your turn Down, you may attempt to apply Yender’s Formula to yourself. If you do so, you must roll a Resist Physical check in place of the usual Heal check (this represents the fact that you are working through blinding pain)."}
+			{"Name":"Field Dressing",
+			"Description":"You do not need to spend Stamina when making your first Heal check on each turn. Any additional Heal checks require that you spend Stamina as normal."},
+			{"Name":"Autostimm",
+			"Description":"The first time during a battle that you start your turn Down, you may attempt to apply Yender’s Formula to yourself. If you do so, you must roll a Resist Physical check in place of the usual Heal check (this represents the fact that you are working through blinding pain)."}
+		],
+		"gear":[
+			"! weapon Pistol",
+			" 4 Dose of Yender’s Formula"
 		]
 	}
-]
+}

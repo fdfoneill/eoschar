@@ -232,7 +232,7 @@ class Focus(Choice):
 		self.skills = kwargs['skills']
 		self.trait = kwargs['trait']
 
-	def implement(self,character_sheet,*args,**kwargs) -> bool:
+	def implement(self,character_sheet,*args,**kwargs):
 		for s in self.skills:
 			character_sheet.skills[s].level += 1
 		character_sheet.traits.append({"Name":self.trait["name"],"Description":self.trait["description"]})
@@ -251,9 +251,8 @@ class Trait(Choice):
 		super().__init__(**kwargs)
 		self.description = description
 
-	def implement(self,character_sheet,*args,**kwargs) -> bool:
+	def implement(self,character_sheet,*args,**kwargs):
 		character_sheet.traits.append({"Name":self.name,"Description":self.description})
-		return True
 
 
 class CombatSpecialty(Choice):
@@ -262,8 +261,35 @@ class CombatSpecialty(Choice):
 		super().__init__(**kwargs)
 		self.traits = kwargs['traits']
 
-	def implement(self,character_sheet,*ags,**kwargs) -> bool:
+	def implement(self,character_sheet,*args,**kwargs) -> bool:
 		return True
+
+
+class Background(Choice):
+	"""A class to represent an EoS background"""
+	def __init__(self,**kwargs):
+		super().__init__(**kwargs)
+		self.trait = kwargs['trait']
+		self.trivia = kwargs['trivia']
+		self.gear = kwargs['gear']
+		self.money = kwargs['money']
+
+	def implement(self,character_sheet,*args,**kwargs):
+		character_sheet.traits.append(self.trait)
+		character_sheet.trivia += self.trivia
+		for item in gear:
+			parts = item.split()
+			if parts[0] == "!": # signals abstract gear choice
+				{
+				"potions":character_sheet._abstract_potions,
+				"grenades":character_sheet._abstract_grenades,
+				"ammunition":character_sheet._abstract_ammunition,
+				"modifications":character_sheet._abstract_modifications,
+				"kits":character_sheet._abstract_kits
+				}[parts[1]][parts[2]] += parts[3]
+			else:
+				character_sheet.append(item)
+		character_sheet.money += self.money
 
 
 class Item(Choice):

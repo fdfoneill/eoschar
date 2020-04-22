@@ -52,6 +52,9 @@ class CharacterSheet:
 	_abstract_grenades: dict
 		Tracks number of each level the character is
 		owed.
+	_abstract_kits: dict
+		Tracks number of each level the character is
+		owed.
 
 
 	Methods
@@ -115,6 +118,7 @@ class CharacterSheet:
 		self._abstract_modifications = {"A":0,"B":0,"C":0}
 		self._abstract_ammunition = {"A":0,"B":0,"C":0}
 		self._abstract_grenades = {"A":0,"B":0,"C":0}
+		self._abstract_kits = {"A":0,"B":0,"C":0}
 
 	def load(self,file_path):
 		"""Read data from text file"""

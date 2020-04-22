@@ -90,6 +90,7 @@ trees.append(talent)
 #####################
 
 shooting_fighting = Choice(name="Shooting and Fighting Dice",children_category="Die to Boost",root_id=7)
+
 # add two options
 for d in ["Shooting Die","Fighting Die"]:
 	sfo = Choice(name=d)

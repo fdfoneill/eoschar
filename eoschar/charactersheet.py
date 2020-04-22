@@ -6,6 +6,7 @@ import json, pickle, sys
 from .choice import Choice
 from .dietype import DieType
 from .func import getModel
+from .options import trees as TREES
 
 class CharacterSheet:
 	""" A class to represent an EoS character sheet
@@ -70,12 +71,14 @@ class CharacterSheet:
 	"""
 
 	def __init__(self):
-
 		# blank options and data
-		self.options=[]
+		self.options=TREES
 		self.data=[]
 
 		# initialize default game stats
+		self.loadBlank()
+
+	def loadBlank(self):
 		## choice_names
 		self.choice_names = {
 			"Name":'',
@@ -112,9 +115,11 @@ class CharacterSheet:
 		self.gear = []
 		## money
 		self.money = 0
+		## weapons before modifications
+		self._raw_weapons = []
 		## abstract dictionaries
 		self._abstract_potions = {"A":0,"B":0,"C":0}
-		self._abstract_weapons = []
+		self._abstract_weapons = {"Melee":0,"Ranged":0,"Any":0}
 		self._abstract_modifications = {"A":0,"B":0,"C":0}
 		self._abstract_ammunition = {"A":0,"B":0,"C":0}
 		self._abstract_grenades = {"A":0,"B":0,"C":0}
@@ -138,3 +143,9 @@ class CharacterSheet:
 			log.exception("Failed to apply")
 			return False
 		return True
+
+	def flush(self):
+		"""Reset character and apply all current choices"""
+		self.loadBlank()
+		for c in self.data:
+			self.apply(c)

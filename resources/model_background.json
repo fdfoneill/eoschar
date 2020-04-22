@@ -1,0 +1,210 @@
+[
+	{"name":"Waster",
+		"description":"",
+		"trait":{
+			"Name":"Greylung",
+			"Description":"You treat your Brawn as one die type better for any Resist Physical check made against exposure to the elements."
+		},
+		"trivia":[
+			"Geography",
+			"History"
+		],
+		"gear":[
+			"Rebreather",
+			"Set of Clothes",
+			"Envirosuit",
+			"Survivalist's Pack",
+			"Trinket from your old homestead"
+		],
+		"money":500
+	},
+	{"name":"Ash Farmer",
+		"description":"",
+		"trait":{
+			"Name":"Green from the Grey",
+			"Description":"You have an aptitude for plants from the Wastes, and given enough time and the right supplies can cultivate food."
+		},
+		"trivia":[
+			"Agriculture",
+			"History"
+		],
+		"gear":[
+			"Rebreather",
+			"Set of Clothes",
+			"Envirosuit",
+			"Botanist's Kit",
+			"Jar of dirt from your farm"
+		],
+		"money":500
+	},
+	{"name":"Urchin",
+		"description":"",
+		"trait":{
+			"Name":"Work the Crowd",
+			"Description":"You can improve your Quality die type by 1 for any roll made to hide in a large group of people."
+		},
+		"trivia":[
+			"Criminal Culture",
+			"Pop Culture"
+		],
+		"gear":[
+			"Rebreather",
+			"Set of Clothes",
+			"Body Armor",
+			"Keepsake from your family"
+			"! potion B 2"
+		],
+		"money":500
+	},
+	{"name":"Corporate",
+		"description":"",
+		"trait":{
+			"Name":"Talk the Talk",
+			"Description":"You can improve your Quality die type by 1 for any skill roll involving corporate bureaucracy or commercial etiquette."
+		},
+		"trivia":[
+			"Transit",
+			"Law"
+		],
+		"gear":[
+			"Rebreather",
+			"Set of Clothes",
+			"Body Armor",
+			"! potion B 2",
+			"Corporate ID"
+		],
+		"money":500
+	},
+	{"name":"Noble",
+		"description":"",
+		"trait":{
+			"Name":"Highborn",
+			"Description":"Improve your Spirit die type by 1 (e.g. 2d8 becomes 2d6) for any Lie or Threaten check against someone of lower class, or any Persuade check with someone of equal class (provided that they know and respect your heritage)."
+		},
+		"trivia":[
+			"Politics",
+			"History"
+		],
+		"gear":[
+			"Rebreather",
+			"Set of Clothes",
+			"Body Armor",
+			"Family Crest"
+		],
+		"money":1000
+	},
+	{"name":"Scholar",
+		"description":"",
+		"trait":{
+			"Name":"Learned",
+			"Description":"Improve your trivia on two topics of your choice by 1. Given 8 hours time to research, you can improve your knowledge or trivia of a topic by 2 for a period of 24 hours."
+		},
+		"trivia":[
+			"Academics",
+			"History"
+		],
+		"gear":[
+			"Rebreather",
+			"Set of Clothes",
+			"Envirosuit",
+			"! kit A 1",
+			"Diploma"
+		],
+		"money":500
+	},
+	{"name":"Confirmed",
+		"description":"",
+		"trait":{
+			"Name":"Magemarks",
+			"Description":"You receive respect from other magic-users, and are treated as an equal by even the greatest of mages."
+		},
+		"trivia":[
+			"The Church",
+			"Politics"
+		],
+		"gear":[
+			"Rebreather",
+			"Set of Clothes",
+			"Magic Focus",
+			"! kit A 1",
+			"Pendant of Noverre"
+		],
+		"money":500
+	},
+	{"name":"Scion",
+		"description":"",
+		"trait":{
+			"Name":"Rafter Rat",
+			"Description":"You can find hidden passageways (if they exist) in any religious building. This applies only to things like service tunnels and undercrofts, not deliberately secret passages."
+		},
+		"trivia":[
+			"The Church",
+			"Criminal Culture"
+		],
+		"gear":[
+			"Rebreather",
+			"Set of Clothes",
+			"Priestly Robes",
+			"5 Immolation Capsules",
+			"Holy Symbol"
+		],
+		"money":500
+	},
+	{"name":"Shipborn",
+		"description":"",
+		"trait":{
+			"Name":"Salty",
+			"Description":"Improve your Quality die type by 1 when performing any activity that would be common aboard a seagoing vessel. Be prepared to make your case to the Narrator for any activity that is not obviously nautical in nature."
+		},
+		"trivia":[
+			"Geography",
+			"The Cults"
+		],
+		"gear":[
+			"Rebreather",
+			"Set of Clothes",
+			"Envirosuit",
+			"Short-Range Communicator",
+			"Crew Token"
+		],
+		"money":500
+	},
+	{"name":"Militia",
+		"description":"",
+		"trait":{
+			"Name":"Well-Regulated",
+			"Description":"Improve your Quality die type by 1 for any attempt to gain permission to bring a weapon somewhere it would usually be forbidden (e.g. 2d8 becomes 2d6). For example, this trait would apply to a Persuade check to convince a guard that you can bring your rifle into an office building."
+		},
+		"trivia":[
+			"Militia",
+			"Geography"
+		],
+		"gear":[
+			"Rebreather",
+			"Set of Clothes",
+			"Body Armor",
+			"! grenade B 2",
+			"Company Jacket"
+		],
+		"money":500
+	},
+	{"name":"Conscript",
+		"description":"",
+		"trait":{
+			"Name":"Commandeer Materiel",
+			"Description":"You can make an Appraise check to guess where stores of food, drink, and recreational alchemixtures are stored in any given building or establishment."
+		},
+		"trivia":[
+			"Food",
+			"Pop Culture"
+		],
+		"gear":[
+			"Rebreather",
+			"Set of Clothes",
+			"Body Armor",
+			"2 Yender's Formula",
+			"Draft Letter"
+		],
+		"money":500
+	}
+]

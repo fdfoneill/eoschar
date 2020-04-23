@@ -15,6 +15,11 @@ class CharacterSheet:
 
 	Attributes
 	----------
+	filled: bool
+		Whether the character sheet has all its valid options
+		filled out in self.data. If False, cannot save or flush.
+		Set to True when character is loaded or when choices
+		are made through an Interface object.
 	options: list
 		List of all creation trees. Each item is a Choice
 		object.
@@ -74,6 +79,7 @@ class CharacterSheet:
 		# blank options and data
 		self.options=TREES
 		self.data=[]
+		self.filled = False
 
 		# initialize default game stats
 		self.loadBlank()
@@ -129,11 +135,16 @@ class CharacterSheet:
 		"""Read data from text file"""
 		with open(file_path,'r') as rf:
 			self.data = pickle.load(rf)
+		self.filled=True
 
-	def save(self,file_path):
+	def save(self,file_path) ->bool:
 		"""Write data to text file"""
+		if not self.filled:
+			log.warning("Cannot save incomplete character")
+			return False
 		with open(file_path,'w') as wf:
 			pickle.dump(self.data,wf)
+		return True
 
 	def apply(self,option)->bool:
 		"""Apply a choice to the character sheet"""
@@ -144,8 +155,12 @@ class CharacterSheet:
 			return False
 		return True
 
-	def flush(self):
+	def flush(self) -> bool:
 		"""Reset character and apply all current choices"""
+		if not self.filled:
+			log.warning("Character data incomplete, cannot flush")
+			return False
 		self.loadBlank()
 		for c in self.data:
 			self.apply(c)
+		return True

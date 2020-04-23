@@ -545,3 +545,67 @@ class PointBuy(Choice):
 		self.current_points += redeemed_points
 		self.categories['category_name']['bought_levels'] -= 1
 		return True
+
+
+class AssignAbstractGear(Choice):
+	"""A class to facilitate the selection of abstract gear
+
+	Throughout character creation, a character will accumulate
+	what is called 'abstract gear'; that is, items from a
+	given *class* of gear, rather than a specific item. For
+	example, many Training choices grant "1 level B potion".
+	This class represents the conversion of those abstract
+	items into concrete items.
+
+	***
+
+	Attributes
+	----------
+
+	Methods
+	-------
+	assign: bool
+		Takes a CharacterSheet as argument, runs over all its
+		abstract gear and converts it to real gear.
+	"""
+
+	def __init__(self,**kwargs):
+		super().__init__(**kwargs)
+		## weapons before modifications
+		self.raw_weapons = None
+		## abstract dictionaries
+		self.abstract_potions = None
+		self.abstract_weapons = None
+		self.abstract_modifications = None
+		self.abstract_ammunition = None
+		self.abstract_grenades = None
+		self.abstract_kits = None
+		# references
+		self.ref_potions = {"A":[],"B":[],"C":[]}
+		self.ref_modifications = {"A":[],"B":[],"C":[]}
+		self.ref_grenades = {"A":[],"B":[],"C":[]}
+		self.ref_ammunition = {"A":[],"B":[],"C":[]}
+		self.ref_weapons = {"Ranged":[],"Melee":[]}
+		## add all potions
+		potion_model = getModel('model_potions.json')
+		for p in potion_model:
+			self.ref_potions[p['level']] = p['name']
+		## add all modifications
+		modification_model = getModel('model_modifications.json')
+		##### ACTUALLY DO THE ADDING
+		## add all grenades
+		## add all ammunition
+
+	def assign(self,character_sheet):
+		## weapons before modifications
+		self.raw_weapons = character_sheet._raw_weapons
+		## abstract dictionaries
+		self.abstract_potions = character_sheet._abstract_potions
+		self.abstract_weapons = character_sheet._abstract_weapons
+		self.abstract_modifications = character_sheet._abstract_modifications
+		self.abstract_ammunition = character_sheet._abstract_ammunition
+		self.abstract_grenades = character_sheet._abstract_grenades
+		self.abstract_kits = character_sheet._abstract_kits
+
+	def implement(self,character_sheet,*args,**kwargs):
+		pass

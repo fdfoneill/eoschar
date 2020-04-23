@@ -2,7 +2,7 @@ import logging, os
 logging.basicConfig(level=os.environ.get("LOGLEVEL","INFO"))
 log = logging.getLogger(__name__)
 
-from .choice import Choice, Species, Training, Focus, CombatSpecialty, Background, Motivation, Trait, Item, PointBuy
+from .choice import Choice, Species, Training, Focus, CombatSpecialty, Background, Motivation, Trait, Item, PointBuy, AssignAbstractGear
 from .weapon import Weapon
 from .dietype import DieType
 from .func import getModel
@@ -281,4 +281,14 @@ motivation = Motivation(name="Motivation",root_id=10)
 
 # append
 trees.append(motivation)
+
+
+#########################
+# assigning abstract gear
+#########################
+
+assign_abstract_gear = AssignAbstractGear(name="Assign Abstract Gear",root_id=11)
+
+# append
+trees.append(assign_abstract_gear)
 

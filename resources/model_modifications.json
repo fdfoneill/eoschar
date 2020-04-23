@@ -1,0 +1,104 @@
+{
+	"Bolt-Thrower":{
+		"name":"Bolt-Thrower",
+		"special":"This weapon launches sharpened metal stakes instead of bullets. The weapon cannot take any other Modifications, but can take alchemical ammunition.",
+		"level":"A",
+		"prerequisites":["Long Arm"]
+	},
+	"Breacher Muzzle":{
+		"name":"Breacher Muzzle",
+		"special":"This weapon takes no penalty to the shooting pool for being fired at more than half range. Instead, if the target is within half range, the AP increases by 1.",
+		"level":"A",
+		"prerequisites":["Long Arm"]
+	},
+	"Chem-Pipes":{
+		"name":"Chem-Pipes",
+		"special":"This weapon may take alchemical ammunition as if it were a ranged weapon.",
+		"level":"A",
+		"prerequisites":["Blade","Bludgeon"]
+	},
+	"Concealable":{
+		"name":"Concealable",
+		"special":"The weapon can be disguised as something innocuous, or easily hidden. While disguised or hidden, it can be carried openly without arousing suspicion.",
+		"level":"A",
+		"prerequisites":["Blade","Pistol"]
+	},
+	"Double-Barrel":{
+		"name":"Double-Barrel",
+		"special":"Each time this weapon is fired, the user may choose to fire one or both barrels. If firing one barrel, the weapon functions as normal. If firing both barrels, the user makes two shooting attacks against the same target, but must make a TN 4 Brawn check or automatically miss both shots.",
+		"level":"A",
+		"prerequisites":["Long Arm","Pistol"]
+	},
+	"Gene-Lock":{
+		"name":"Gene-Lock",
+		"special":"This weapon is coded to its owner’s DNA. In anyone else’s hands, it is inert and will not fire.",
+		"level":"A",
+		"prerequisites":["Long Arm","Pistol"]
+	},
+	"Large":{
+		"name":"Large",
+		"special":"",
+		"level":"A",
+		"prerequisites":["Blade","Bludgeon"]
+	},
+	"Stealth Mod":{
+		"name":"Stealth Mod",
+		"special":"This weapon makes substantially less noise than usual when used; its use is more likely to go unnoticed.",
+		"level":"A",
+		"prerequisites":["Long Arm","Pistol"]
+	},
+
+
+
+	"Auto Targeter":{
+		"name":"Auto Targeter",
+		"special":"",
+		"level":"B",
+		"prerequisites":["Pistol","Long Arm"]
+	},
+	"Brutal":{
+		"name":"Brutal",
+		"special":"The user may choose to make a TN 4 Brawn check when attacking with this weapon two-handed. On a success, the attack has an AP of 1 higher than usual. On a failure, they lose an additional Stamina.",
+		"level":"B",
+		"prerequisites":["Bludgeon"]
+	},
+	"Paired":{
+		"name":"Paired",
+		"special":"These twin blades add one die to the wielder’s fighting pool. If used one-handed, the extra die is lost.",
+		"level":"B",
+		"prerequisites":["Blade"]
+	},
+	"Plas-Core":{
+		"name":"Plas-Core",
+		"special":"This weapon treats any AV that is equal to its AP as if the AV were lower than its AP. A melee weapon with this Modification increases its Reach by 1. A ranged weapon with this Modification cannot take alchemical ammunition.",
+		"level":"B",
+		"prerequisites":["Blade","Long Arm","Pistol"]
+	},
+	"Resin Tank":{
+		"name":"Resin Tank",
+		"special":"If a target is hit with this weapon, they are immediately Pinned and must make a TN 3 Brawn check to willingly change their state.",
+		"level":"B",
+		"prerequisites":["Long Arm"]
+	},
+	"Shock Wires":{
+		"name":"Shock Wires",
+		"special":"A target hit by this weapon must immediately make a TN 3 Resist Physical check. On a failure, they go Down, but are at no risk of death. If they fail by four or more, they die. On a success, the hit has no effect.",
+		"level":"B",
+		"prerequisites":["Bludgeon","Long Arm"]
+	},
+
+
+
+	"Overcharged Plas-Core":{
+		"name":"Overcharged Plas-Core",
+		"special":"This weapon cannot take alchemical rounds. However, if two or more 1’s are rolled when firing, the gun overheats and the  user takes an AP1 hit.",
+		"level":"C",
+		"prerequisites":["Long Arm"]
+	},
+	"Chemtrace Ammunition":{
+		"name":"Chemtrace Ammunition",
+		"special":"This weapon cannot take alchemical rounds. However, it can be used to fire at targets who are Hidden, if they have been previously marked with a special chemical. If the weapon is used in this way, the target is treated as being Obscured.The weapon comes with a supply of the marking chemical, and more can be purchased legally.",
+		"level":"C",
+		"prerequisites":["Long Arm"]
+	}
+}

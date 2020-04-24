@@ -2,7 +2,8 @@ import logging, os
 logging.basicConfig(level=os.environ.get("LOGLEVEL","INFO"))
 log = logging.getLogger(__name__)
 
-from .choice import Choice, Species, Training, Focus, CombatSpecialty, Background, Motivation, Trait, Item, PointBuy, AssignAbstractGear
+import copy
+from .choice import Choice, Species, Training, Focus, CombatSpecialty, Background, TextInput, Trait, Item, PointBuy, AssignAbstractGear
 from .weapon import Weapon
 from .dietype import DieType
 from .func import getModel
@@ -19,10 +20,19 @@ species = Choice(name="Species",children_category="Species",root_id=1)
 # human
 human = Species(name="Human",children_category="Species Trait",base_qualities=species_model['Human']['base_qualities']) # root choice
 ## add race traits
-for q in getModel("model_qualities.json"): # add all human traits
-	pwg = Trait(name=f"People of the Wandering God ({q})",description=f"Improve {q} die type by 1 (already included).")
-	pwg.addImplementation(lambda character_sheet: character_sheet.qualities[q].improve())
-	human.addChild(pwg)
+# for q in getModel("model_qualities.json"): # add all human traits
+# 	# pwg = Trait(name=f"People of the Wandering God ({q})",description=f"Improve {q} die type by 1 (already included).")
+# 	# pwg.addImplementation(lambda character_sheet: character_sheet.qualities[q].improve())
+# 	# human.addChild(pwg)
+# 	human.addChild(Trait(name=f"People of the Wandering God ({q})",description=f"Improve {q} die type by 1 (already included).",implementation=lambda character_sheet: character_sheet.qualities[f"{q}"].improve()))
+### brawn
+human.addChild(Trait(name=f"People of the Wandering God (Brawn)",description=f"Improve Brawn die type by 1 (already included).",implementation=lambda character_sheet: character_sheet.qualities["Brawn"].improve()))
+### grace
+human.addChild(Trait(name=f"People of the Wandering God (Grace)",description=f"Improve Grace die type by 1 (already included).",implementation=lambda character_sheet: character_sheet.qualities["Grace"].improve()))
+### wits
+human.addChild(Trait(name=f"People of the Wandering God (Wits)",description=f"Improve Wits die type by 1 (already included).",implementation=lambda character_sheet: character_sheet.qualities["Wits"].improve()))
+### spirit
+human.addChild(Trait(name=f"People of the Wandering God (Spirit)",description=f"Improve Spirit die type by 1 (already included).",implementation=lambda character_sheet: character_sheet.qualities["Spirit"].improve()))
 ## add as child to species
 species.addChild(human)
 
@@ -73,17 +83,24 @@ trees.append(species)
 ########
 
 talent = Choice(name="Talent",children_category="Talent",root_id=2)
+
 # add individual talents
-for q in getModel("model_qualities.json"): # add all human traits
-	tlnt = Choice(name=q)
-	tlnt.addImplementation(lambda character_sheet: character_sheet.qualities[q].improve())
-	def tlnt_preq(self,character_sheet):
-		for choice in character_sheet.choices:
-			if choice.category == "Species Trait" and choice.name == f"People of the Wandering God ({q})":
+## talent prerequisite factory
+def make_tlnt_preq(qual):
+	def tlnt_preq(character_sheet):
+		for choice in character_sheet.data:
+			if choice.name == f"People of the Wandering God ({qual})":
 				return False
 		return True
-	tlnt.prerequisites.append(tlnt_preq)
-	talent.addChild(tlnt)
+	return tlnt_preq
+## brawn
+talent.addChild(Choice(name="Brawn",implementation=lambda character_sheet: character_sheet.qualities["Brawn"].improve(),prerequisites=[make_tlnt_preq("Brawn")]))
+## grace
+talent.addChild(Choice(name="Grace",implementation=lambda character_sheet: character_sheet.qualities["Grace"].improve(),prerequisites=[make_tlnt_preq("Grace")]))
+## wits
+talent.addChild(Choice(name="Wits",implementation=lambda character_sheet: character_sheet.qualities["Wits"].improve(),prerequisites=[make_tlnt_preq("Wits")]))
+## spirit
+talent.addChild(Choice(name="Spirit",implementation=lambda character_sheet: character_sheet.qualities["Spirit"].improve(),prerequisites=[make_tlnt_preq("Spirit")]))
 
 # cascade and append
 talent.cascadeRootId()
@@ -97,11 +114,11 @@ trees.append(talent)
 
 shooting_fighting = Choice(name="Shooting and Fighting Dice",children_category="Die to Boost",root_id=3)
 
-# add two options
-for d in ["Shooting Die","Fighting Die"]:
-	sfo = Choice(name=d)
-	sfo.addImplementation(lambda character_sheet: character_sheet.combat_stats[d].improve())
-	shooting_fighting.addChild(sfo)
+# shooting die
+shooting_fighting.addChild(Choice(name="Shooting Die",implementation = lambda character_sheet: character_sheet.combat_stats["Shooting Die"].improve()))
+
+# fighting die
+shooting_fighting.addChild(Choice(name="Fighting Die",implementation = lambda character_sheet: character_sheet.combat_stats["Fighting Die"].improve()))
 
 # cascade and append
 shooting_fighting.cascadeRootId()
@@ -118,7 +135,7 @@ training = Choice(name="Training",children_category="Training",root_id=4)
 # martial
 martial = Training(name="Martial",children_category="Gear Option",skill="Athletics")
 ## add default gear
-martial.addImplementation(lambda character_sheet: character_sheet._abstract_potions.update(['B'],character_sheet._abstract_potions['B']+1))
+martial.addImplementation(lambda character_sheet: character_sheet._abstract_potions.update({'B':character_sheet._abstract_potions['B']+1}))
 ## add gear choices
 martial.addChild(Item(name="Choose 3 rounds of alchemical ammunition",abstract=True,gear_type="ammunition",level="C",n=3))
 martial.addChild(Item(name="Choose 1 level B grenade",abstract=True,gear_type="grenade",level="B",n=1))
@@ -129,11 +146,11 @@ training.addChild(martial)
 # underworld
 underworld = Training(name="Underworld",children_category="Gear Option",skill="Lie",gear=["Smoke Grenade"])
 ## add default gear
-underworld.addImplementation(lambda character_sheet: character_sheet._abstract_potions.update(['B'],character_sheet._abstract_potions['B']+3))
+underworld.addImplementation(lambda character_sheet: character_sheet._abstract_potions.update({'B':character_sheet._abstract_potions['B']+3}))
 ## add gear choices
 ugc1 = Item(name="A blade with the chem-pipes modification and choose 3 rounds of alchemical ammunition",abstract=False,gear_type="custom")
 ugc1.addImplementation(lambda character_sheet: character_sheet.weapons.append(Weapon(name="Poison Blade",reach=1,ap=1,special="This weapon may take alchemical ammunition as if it were a ranged weapon."))) # blade with chem-pipes
-ugc1.addImplementation(lambda character_sheet: character_sheet._abstract_ammunition.update(['A'],character_sheet._abstract_ammunition['A']+3)) # 3 rounds of alchemical ammunition
+ugc1.addImplementation(lambda character_sheet: character_sheet._abstract_ammunition.update({'A':character_sheet._abstract_ammunition['A']+3})) # 3 rounds of alchemical ammunition
 underworld.addChild(ugc1) # add the complicated choice as a child
 underworld.addChild(Item(name="Sniper Rifle",gear_type="weapon"))
 ## add as a child to training
@@ -150,14 +167,14 @@ training.addChild(magic)
 # technology
 technology = Training(name="Technology",children_category="Gear Option",skill="Interface")
 ## add default gear
-technology.addImplementation(lambda character_sheet: character_sheet._abstract_potions.update(['B'],character_sheet._abstract_potions['B']+1))
-technology.addImplementation(lambda character_sheet: character_sheet._abstract_grenades.update(['B'],character_sheet._abstract_grenades['B']+1))
+technology.addImplementation(lambda character_sheet: character_sheet._abstract_potions.update({'B':character_sheet._abstract_potions['B']+1}))
+technology.addImplementation(lambda character_sheet: character_sheet._abstract_grenades.update({'B':character_sheet._abstract_grenades['B']+1}))
 ## add gear choices
 technology.addChild(Item(name="A Personal Shield Generator",item_name="Personal Shield Generator"))
 tgc2 = Choice(name="Choose a ranged weapon with 1 level B modification")
 tgc2.addChild(Item(name="Pistol",gear_type="weapon"))
 tgc2.addChild(Item(name="Long Arm",gear_type="weapon"))
-tgc2.addImplementation(lambda character_sheet: character_sheet._abstract_modifications.update(['B'],character_sheet._abstract_modifications['B']+1))
+tgc2.addImplementation(lambda character_sheet: character_sheet._abstract_modifications.update({'B':character_sheet._abstract_modifications['B']+1}))
 technology.addChild(tgc2)
 
 ## add as child to training
@@ -208,16 +225,16 @@ combat_specialty = Choice(name="Combat Specialty",children_category="Combat Spec
 model = getModel('model_combat_specialty.json')
 
 # close combat
-cso1 = CombatSpecialty(**model['Close Combat'])
+cso1 = CombatSpecialty(**model['Close Combat'],children_category= "Gear Option")
 cso1.addChild(Item(name="2 level A modifications",level="A",n=2,gear_type="modification",abstract=True))
 cso1.addChild(Item(name="1 level B modification",level="B",n=1,gear_type="modification",abstract=True))
 # add as child to combat_specialty
 combat_specialty.addChild(cso1)
 
 # ranged
-cso2 = CombatSpecialty(**model['Ranged'])
+cso2 = CombatSpecialty(**model['Ranged'],children_category= "Gear Option")
 # sub-option 1
-cso2_o1 = Item(name="Long Arm and choice of modifications",n=1,gear_type="weapon",item_name="Long Arm",abstract=True)
+cso2_o1 = Item(name="Long Arm and choice of modifications",n=1,gear_type="weapon",item_name="Long Arm",abstract=True,children_category= "Gear Sub-Option")
 cso2_o1.addChild(Item(name="2 level A modifications",level="A",n=2,gear_type="modification",abstract=True))
 cso2_o1.addChild(Item(name="1 level B modification",level="B",n=1,gear_type="modification",abstract=True))
 cso2.addChild(cso2_o1)
@@ -227,18 +244,18 @@ cso2.addChild(Item(name="Sniper Rifle",n=1,gear_type="weapon"))
 combat_specialty.addChild(cso2)
 
 # tactician
-cso3 = CombatSpecialty(**model['Tactician'])
-cso3.addImplementation(lambda character_sheet: character_sheet._abstract_weapons.update('Any',character_sheet._abstract_weapons['Any'] + 1))
+cso3 = CombatSpecialty(**model['Tactician'],children_category= "Gear Option")
+cso3.addImplementation(lambda character_sheet: character_sheet._abstract_weapons.update({'Any':character_sheet._abstract_weapons['Any'] + 1}))
 cso3.addChild(Item(name="2 level A modifications",level="A",n=2,gear_type="modification",abstract=True))
 cso3.addChild(Item(name="1 level B modification",level="B",n=1,gear_type="modification",abstract=True))
 # add as child to combat_specialty
 combat_specialty.addChild(cso3)
 
 # healer
-cso4 = CombatSpecialty(**model['Healer'])
+cso4 = CombatSpecialty(**model['Healer'],children_category= "Gear Option")
 cso4.addChild(Item(name="Long Arm",abstract=True,gear_type="weapon"))
 cso4_o2 = Item(name="Melee Weapon (Blade or Hammer)",gear_type="custom")
-cso4_o2.addImplementation(lambda character_sheet: character_sheet._abstract_weapons.update('Melee',character_sheet._abstract_weapons['Melee'] + 1))
+cso4_o2.addImplementation(lambda character_sheet: character_sheet._abstract_weapons.update({'Melee':character_sheet._abstract_weapons['Melee'] + 1}))
 cso4.addChild(cso4_o2)
 # add as child to combat_specialty
 combat_specialty.addChild(cso4)
@@ -277,7 +294,7 @@ trees.append(trivia)
 # motivation
 ############
 
-motivation = Motivation(name="Motivation",root_id=10)
+motivation = TextInput(name="Motivation",root_id=10)
 
 # append
 trees.append(motivation)
@@ -292,3 +309,12 @@ assign_abstract_gear = AssignAbstractGear(name="Assign Abstract Gear",root_id=11
 # append
 trees.append(assign_abstract_gear)
 
+
+######
+# name
+######
+
+charName = TextInput(name="Name",root_id=12)
+
+# append
+trees.append(charName)

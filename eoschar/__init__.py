@@ -21,5 +21,6 @@ import logging, os
 logging.basicConfig(level=os.environ.get("LOGLEVEL","INFO"))
 log = logging.getLogger(__name__)
 
-from ._version import __version__
 import json, sys
+from ._version import __version__
+from .interface import Interface

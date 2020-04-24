@@ -11,6 +11,11 @@ from ._version import __version__
 import argparse
 
 
+def makeExample():
+	log.warning("Not implemented")
+	pass
+
+
 def main():
 	parser = argparse.ArgumentParser(description="Create, save, and export Era of Silence characters")
 	## use subparsers https://pymotw.com/3/argparse/#nesting-parsers

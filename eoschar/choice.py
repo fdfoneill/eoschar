@@ -2,10 +2,11 @@ import logging, os
 logging.basicConfig(level=os.environ.get("LOGLEVEL","INFO"))
 log = logging.getLogger(__name__)
 
-import random, sys
+import copy, random, sys
 from collections import defaultdict
 from .func import getModel
 from .weapon import Weapon
+from .dietype import DieType
 
 class Choice:
 	"""A class to represent an EoS character creation choice point
@@ -84,6 +85,10 @@ class Choice:
 		self.prerequisites = []
 		self.root_id = kwargs.get("root_id",None)
 		self.unique = kwargs.get("unique",{})
+		try:
+			self.addImplementation(kwargs['implementation'])
+		except KeyError:
+			pass
 
 	def __repr__(self):
 		nodeType = f"{self.category} option" if (self.category is not None) else "root node"
@@ -130,7 +135,7 @@ class Choice:
 		"""
 		if not isinstance(new_child,Choice):
 			raise SyntaxError("new_child must be a Choice object")
-		self.children.append(new_child)
+		self.children.append(copy.deepcopy(new_child))
 
 	def cascadeRootId(self,override_root=False) -> bool:
 		"""Set all children to have the same root_id as this Choice
@@ -198,10 +203,10 @@ class Choice:
 		character_sheet: eoschar.charactersheet.CharacterSheet
 			Character sheet object for which to check the prerequisites
 		"""
-		if  all([f(character_sheet) for f in self.prerequisites]):
-			return True
-		else:
-			return False
+		for f in self.prerequisites:
+			if not f(character_sheet):
+				return False
+		return True
 
 class Species(Choice):
 	"""A class to represent an EoS species option
@@ -222,6 +227,8 @@ class Species(Choice):
 	def implement(self,character_sheet,*args,**kwargs) -> bool:
 		character_sheet.choice_names['Species'] = self.name
 		for q in self.base_qualities.keys():
+			if q not in ["Brawn","Grace","Wits","Spirit"]:
+				log.warning(f"Unknown quality '{q}' implemented by {self.name}")
 			character_sheet.qualities[q] = DieType(self.base_qualities[q])
 		character_sheet.combat_stats['Speed'] = self.speed
 		return True
@@ -244,7 +251,7 @@ class Training(Choice):
 	def implement(self,character_sheet,*args,**kwargs) ->bool:
 		character_sheet.choice_names['Training'] = self.name
 		model = getModel('model_training.json')[self.name]
-		character_sheet.skills[self.skill][level] += 1
+		character_sheet.skills[self.skill]['level'] += 1
 		for item in self.gear:
 			character_sheet.gear.append(item)
 		character_sheet.traits.append({"Name":model["Training Trait"]["name"],"Description":model["Training Trait"]["description"]})
@@ -261,7 +268,7 @@ class Focus(Choice):
 	def implement(self,character_sheet,*args,**kwargs):
 		character_sheet.choice_names['Focus'] = self.name
 		for s in self.skills:
-			character_sheet.skills[s].level += 1
+			character_sheet.skills[s]['level'] += 1
 		character_sheet.traits.append({"Name":self.trait["name"],"Description":self.trait["description"]})
 
 
@@ -303,7 +310,7 @@ class Background(Choice):
 		character_sheet.traits.append(self.trait)
 		character_sheet.trivia += self.trivia
 		character_sheet.trivia = list(set(character_sheet.trivia)) # delete duplicate trivia
-		for item in gear:
+		for item in self.gear:
 			parts = item.split()
 			if parts[0] == "!": # signals abstract gear choice
 				{
@@ -312,19 +319,23 @@ class Background(Choice):
 				"ammunition":character_sheet._abstract_ammunition,
 				"modification":character_sheet._abstract_modifications,
 				"kit":character_sheet._abstract_kits
-				}[parts[1]][parts[2]] += parts[3]
+				}[parts[1]][parts[2]] += int(parts[3])
 			else:
-				character_sheet.append(item)
+				character_sheet.gear.append(item)
 		character_sheet.money += self.money
 
-class Motivation(Choice):
+class TextInput(Choice):
 	"""A class to represent an EoS motivation."""
 	def __init__(self,**kwargs):
 		super().__init__(**kwargs)
-		self.motivation = ""
+		self.value = ""
+
+	def promptUser(self,prompt):
+		print(f"Input your character's {self.name}:")
+		self.value = input(prompt)
 
 	def implement(self,character_sheet,*args,**kwargs):
-		character_sheet.choice_names['Motivation'] = self.motivation
+		character_sheet.choice_names[self.name] = self.value
 
 
 class Trait(Choice):
@@ -441,34 +452,14 @@ class PointBuy(Choice):
 			pass
 		self.current_points = self.starting_points
 
-	# def display(self,level=0):
-	# 	"""What to print if stored alongside Choice objects
-
-	# 	The display() method is intended to show off the tree
-	# 	structure of Choice object groups. Although PointBuy
-	# 	objects have no such structure, they are stored alongside
-	# 	Choice objects and will thus sometimes have display()
-	# 	called.
-
-	# 	This method simply prints the object's name alongside
-	# 	the appropriate number of pipes and dashes.
-	# 	"""
-	# 	if level==0:
-	# 		outString = self.name
-	# 		if self.root_id is not None:
-	# 			outString += f" | <tree {self.root_id}>"
-	# 	else:
-	# 		outString = ("| " * (level-1)) + "|-" + f"{self.name}"
-	# 	print(outString)
-
 	def implement(self,character_sheet):
 		if self.name == "Skills":
 			for skill in self.categories.keys():
-				if skill['bought_levels']> 0:
+				if self.categories[skill]['bought_levels']> 0:
 					character_sheet.skills[skill]['level'] += skill['bought_levels']
 		elif self.name == "Trivia":
 			for topic in self.categories.keys():
-				if topic['bought_levels'] > 0:
+				if self.categories[topic]['bought_levels'] > 0:
 					character_sheet.trivia.append(topic)
 			character_sheet.trivia = list(set(character_sheet.trivia))
 		else:

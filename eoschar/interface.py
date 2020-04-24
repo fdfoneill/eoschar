@@ -8,29 +8,34 @@ from .choice import Choice
 from .options import trees as TREES
 
 
+PROMPT = "#"
+
 def getYesNo(message:str) -> bool:
 	response = input(message+"\n[Y/N]: ")
-	if response.lower() in ["y","yes",'1']:
+	if response.lower() in ["y","yes"]:
 		return True
-	elif response.lower() in ['n','no','0']:
+	elif response.lower() in ['n','no']:
 		return False
 	else:
 		log.warning(f"Expected Y or N; got {response}")
 		getYesNo(message)
 
-def chooseOne(choices:list,symbol=">>>"):
+def chooseOne(choices:list,symbol=PROMPT):
 	"""Returns input prompted with 'symbol'"""
 	valid = [i for i in range(len(choices))]
 	for i in valid:
 		print(f"[{i}] {choices[i].name}")
-	selection = input(symbol)
-	if selection in valid:
-		return choices[selection]
-	elif selection == "exit":
-		if getYesNo("Exit character creator?"):
-			sys.exit()
-	else:
-		print(f"Invalid selection: {selection}. Please enter a valid integer choice ID.")
+	try:
+		selection = input(symbol)
+		if selection == "exit":
+			if getYesNo("Exit character creator?"):
+				return False
+		elif int(selection) in valid:
+			return choices[int(selection)]
+		else:
+			raise ValueError
+	except ValueError:
+		print(f"Invalid selection: '{selection}'. Please enter a valid integer choice ID or 'exit'.")
 		return chooseOne(choices,symbol)
 
 
@@ -57,7 +62,7 @@ class Interface:
 	def __init__(self):
 		self.sheet = None
 
-	def runTree(self,node:Choice,character_sheet):
+	def runTree(self,node:Choice,character_sheet,retry = False) -> bool:
 		"""Recursivley offers up all choices in tree
 		
 		Returns name of root node
@@ -71,39 +76,55 @@ class Interface:
 		character_sheet: CharacterSheet
 			Sheet to which choices will be
 			applied
+		retry: bool
+			Whether this node has already been implemented
 		"""
 		try:
+
+			# first implement this node
+			if not retry:
+				log.debug(f"Applying {node.name}")
+				character_sheet.apply(node)
+				character_sheet.data.append(node)
+			if node.category is not None:
+				print(f"Successfully selected {node.name} for your {node.category}.")
+
+			# now offer up next level of choices
 			if node.name in ["Skills","Trivia"]:
-				log.warning("Skills and Trivia not implemented")
-			if node.name in ["Name"]:
-				log.warning("Name not implemented")
+				log.warning(f"Skipping {node.name}: Point-buy choices not implemented")
+			if node.name in ["Name","Motivation"]:
+				node.promptUser(PROMPT)
+			if node.name == "Assign Abstract Gear":
+				log.warning(f"Skipping {node.name}: Not implemented")
 			elif len(node.children) > 0:
 				if node.category is not None:
-					print(f"Selection of {node.name} opens up new options.")
+					print(f"Selection opens up new options.")
 				print(f"Choose a {node.children_category}:")
 				selection = chooseOne(node.children)
+				if selection == False:
+					return False
 				if not selection.checkPrerequisites(character_sheet):
 					log.warning("Prerequisites violation! Try again.")
-					self.runTree(node,character_sheet)
-				selection.implement(character_sheet)
-				character_sheet.data.append(selection)
-				self.runTree(selection,character_sheet)
+					return self.runTree(node,character_sheet,retry=True)
+				return self.runTree(selection,character_sheet)
 			else:
 				print("Done with this choice tree! Moving on.")
+			return True
 		except:
 			log.exception(f"Failed in {node.name}")
+			return False
 
-	def createNewCharacter(self) -> bool:
+	def createNewCharacter(self)->None:
 		"""Walks user through the steps of creating a new character from scratch"""
 		self.sheet = CharacterSheet()
 		print("Creating new character from scratch.\n\nYou will be guided through the steps of character creations. At each step, you will be presented with a series of options.\nTo exit character creator, enter 'exit'")
 		for tree in TREES:
-			self.runTree(tree,self.sheet)
+			if self.runTree(tree,self.sheet) == False:
+				print("Aborted character creation.")
+				return
+		self.sheet.filled=True
 		self.sheet.flush()
 		print(f"Successfully created '{self.sheet.choice_names['Name']}'!")
-		self.sheet.filled=True
-		return True
-
 
 
 	def loadCharacter(self,file_path) -> bool:
@@ -114,4 +135,5 @@ class Interface:
 
 	def editCharacter(self) -> bool:
 		"""Edit active character sheet object"""
-		pass
+		log.warning("Interface.editCharacter() not implemented")
+		return False

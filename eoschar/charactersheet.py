@@ -136,6 +136,7 @@ class CharacterSheet:
 		with open(file_path,'r') as rf:
 			self.data = pickle.load(rf)
 		self.filled=True
+		self.flush()
 
 	def save(self,file_path) ->bool:
 		"""Write data to text file"""

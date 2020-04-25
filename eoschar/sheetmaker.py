@@ -206,11 +206,11 @@ class SheetMaker:
 		pdf.set_x(0.62)
 		pdf.cell(0.82,0.11,"Name")
 		pdf.set_x(1.44)
-		pdf.cell(0.5,0.11,"Range/Reach")
+		pdf.cell(0.5,0.11,"Range/Reach",align="C")
 		pdf.set_x(1.95)
-		pdf.cell(0.4,0.11,"Accuracy")
+		pdf.cell(0.4,0.11,"Accuracy",align="C")
 		pdf.set_x(2.34)
-		pdf.cell(0.32,0.11,"AP")
+		pdf.cell(0.32,0.11,"AP",align="C")
 		#pdf.set_x(2.34)
 		pdf.cell(0.32,0.11,"Special")
 
@@ -359,7 +359,7 @@ class SheetMaker:
 			# trait description
 			pdf.set_x(5.26)
 			pdf.set_font('Arial',size=10,style='')
-			pdf.multi_cell(2.35,0.14,t['Description'],align="L")
+			pdf.multi_cell(2.35,0.15,t['Description'],align="L")
 			pdf.ln()
 
 		# GEAR
@@ -395,14 +395,17 @@ class SheetMaker:
 		pdf.cell(0.32,line_height,border="R")
 		## add each weapon
 		for weapon in self.sheet.weapons: # each one is a Weapon object
-			#print(weapon)
-			pdf.set_font('Arial',size=8,style='')
 			# name
+			font_size = 8
+			name_cell_width = 0.82
+			pdf.set_font('Arial',size=font_size,style='')
+			while pdf.get_string_width(weapon.name) > name_cell_width:
+				font_size -= 0.01
+				pdf.set_font('Arial',size=font_size,style='')
 			pdf.set_x(0.62)
-			pdf.cell(0.82,0.12,weapon.name,align="L",border="T")
+			pdf.cell(name_cell_width,0.12,weapon.name,align="L",border="T")
 			# range / reach
-			#print(weapon.range)
-			#print(weapon.reach)
+			pdf.set_font('Arial',size=8,style='')
 			if (weapon.range is None) or (weapon.range <= 0):
 				r =weapon.reach
 			else:
@@ -425,12 +428,14 @@ class SheetMaker:
 			specials = specials.strip()
 			font_size = 8
 			cell_width = 2.31
-			max_rows = 4
-			while (pdf.get_string_width(specials)/cell_width) > max_rows:
+			max_rows = 3
+			line_length_adjust_factor = 0.2
+			pdf.set_font('Arial',size=font_size,style='')
+			while ((pdf.get_string_width(specials)+(line_length_adjust_factor*max_rows))/cell_width) > max_rows:
 				font_size -= 0.01
 				pdf.set_font('Arial',size=font_size,style='')
 			pdf.multi_cell(cell_width,0.11,specials,border="T")
-			pdf.ln(10)
+			pdf.ln(0.05)
 
 
 

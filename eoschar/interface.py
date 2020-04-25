@@ -6,7 +6,7 @@ import sys
 from collections import namedtuple
 from .func import getYesNo
 from .charactersheet import CharacterSheet
-from .choice import Choice
+from .choice import Choice, Weapon
 from .options import trees as TREES
 
 
@@ -112,8 +112,11 @@ class Interface:
 						sLevel = node.categories[topic]['bought_levels']+node.categories[topic]['base_levels']
 						if sLevel >0:
 							print(f"{topic}: {sLevel}")
-					if node.current_points == 0:
+					if node.current_points == 0 and direction == 0:
 						keepGoing = (not getYesNo("All points spent. Accept these trivia?"))
+						if keepGoing:
+							direction = (direction+1) % 2
+							action = 'switched'
 					else:
 						if action is None:
 							pass
@@ -155,8 +158,11 @@ class Interface:
 					for skill in node.categories.keys():
 						sLevel = node.categories[skill]['bought_levels']+node.categories[skill]['base_levels']
 						print(f"{skill}: {sLevel}")
-					if node.current_points == 0:
+					if node.current_points == 0 and direction ==0:
 						keepGoing = (not getYesNo("All points spent. Accept these skills?"))
+						if keepGoing:
+							direction = (direction+1) % 2
+							action = "switched"
 					else:
 						if action is None:
 							pass
@@ -194,7 +200,7 @@ class Interface:
 				character_sheet.apply(node)
 				character_sheet.data.append(node)
 			elif node.name == "Assign Abstract Gear":
-				print("Throughout character creation, you have gained some 'abstract' gear (e.g. '1 level B grenade'). You will now make those choices.")
+				print("Throughout character creation, you have gained some 'abstract' gear (e.g. '1 level B grenade'). You will now assign those options.")
 				# This is complicated
 				# LOAD DATA
 				node.assign(character_sheet)
@@ -218,10 +224,60 @@ class Interface:
 					print(f"No more {vString}weapons to assign. Moving on.")
 				# MODIFICATIONS (ASSIGN TO WEAPONS)
 				## TODO
-				for level in node.abstract_modifications.keys():
-					pass
+				print("Assign modifications.")
+				for w in node.raw_weapons:
+					try:
+						weapon = Weapon(**w)
+					# sometimes a weapon object sneaks in?
+					except TypeError:
+						log.debug(type(w))
+						weapon = w
+					more = True
+					while more:
+						# if there are no mods left
+						nModsAvailable = sum([node.abstract_modifications[k] for k in node.abstract_modifications.keys()])
+						if nModsAvailable < 1:
+							print("No modifications to assign.")
+							more = False
+						# if there ARE mods left
+						else:
+							modLevels = []
+							print(f"You have {nModsAvailable} modifications available to assign to your {weapon.name}. Choose a level:")
+							for level in node.abstract_modifications.keys():
+								if node.abstract_modifications[level] > 0:
+									modLevels.append(level)
+							modLevels.append("Done adding modifications to this weapon")
+							i, levelSelection = chooseOne(modLevels)
+							if levelSelection == False:
+								return False
+							elif levelSelection == "Done adding modifications to this weapon":
+								more = False
+								continue
+							print(f"Choose a level {levelSelection} modification to add to your {weapon.name}:")
+							modOptions = None
+							modOptions = node.ref_modifications[levelSelection]
+							modOptions.append("No modification")
+							i,modSelection = chooseOne(modOptions)
+							if modSelection == False:
+								return False
+							elif modSelection == "No modification":
+								continue
+							modRes = modSelection.apply(weapon)
+							if not modRes:
+								print("Modification not applied.")
+							else:
+								print(f"Successfully applied {modSelection.name} to {weapon.name}!")
+								node.abstract_modifications[levelSelection] -= 1
+					print("Finished adding modifications to this weapon.")
+					if getYesNo(f"Rename this weapon from '{weapon.name}'?"):
+						weapon.name = input("Enter new name:\n# ")
+						print(f"Successfully renamed to '{weapon.name}'.")
+					node.weapons.append(weapon)
+				# check for unassigned mods
+				if sum([node.abstract_modifications[k] for k in node.abstract_modifications.keys()]) >0:
+					log.warning(f"You have {sum([node.abstract_modifications[k] for k in node.abstract_modifications.keys()])} unassigned modifications remaining!")
+				print("All weapon modifications assigned. Moving on.")
 				# AMMUNITION
-				print(node.abstract_ammunition)
 				for level in node.abstract_ammunition.keys():
 					ammunitionOptions = node.ref_ammunition[level]
 					while node.abstract_ammunition[level] > 0:
@@ -342,7 +398,7 @@ class Interface:
 		"""
 		MenuOption = namedtuple("MenuOption",["name","function","args"])
 		menu_options = []
-		menu_options.append(MenuOption("New Character",self.createNewCharacter,[]))
+		menu_options.append(MenuOption("Create New Character",self.createNewCharacter,[]))
 		menu_options.append(MenuOption("Load Character from File",self.loadCharacter,["path to input character data file"]))
 		menu_options.append(MenuOption("Save Character",self.saveCharacter,["path to output character data file"]))
 		menu_options.append(MenuOption("Edit Character",self.editCharacter,[]))

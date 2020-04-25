@@ -109,7 +109,7 @@ class Modification:
 				log.warning(f"Cannot add a new level {self.level} modification; {weapon.name} already has a level B or C modification.")
 				return False
 		elif self.level == "A":
-			nMods = len(weapon.modification['A'])
+			nMods = len(weapon.modifications['A'])
 			if nMods > 2:
 				log.warning(f"Cannot add a new level {self.level} modification; {weapon.name} already has {nMods} level A modification(s).")
 				return False

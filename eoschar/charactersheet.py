@@ -2,7 +2,7 @@ import logging, os
 logging.basicConfig(level=os.environ.get("LOGLEVEL","INFO"))
 log = logging.getLogger(__name__)
 
-import json, pickle, sys
+import base64, json, pickle, sys
 from ._version import __version__
 from .choice import Choice,TextInput,PointBuy,AssignAbstractGear
 from .dietype import DieType
@@ -159,15 +159,15 @@ class CharacterSheet:
 			return path[i:]
 
 		file_path = file_path.strip("'").strip('"')
-		with open(file_path,'r') as rf:
-			loadedJson = json.loads(rf.read())
-		if self.__version__ != loadedJson['__version__']:
-			log.warning(f"Loaded character created in version {loadedJson['__version__']}, you are running version {self.__version__}. Potential compatibility issues.")
-		self.treePath = loadedJson['treePath']
+		with open(file_path,'rb') as rf:
+			loadedPickle = pickle.loads(rf.read())
+		if self.__version__ != loadedPickle['__version__']:
+			log.warning(f"Loaded character created in version {loadedPickle['__version__']}, you are running version {self.__version__}. Potential compatibility issues.")
+		self.treePath = loadedPickle['treePath']
 
 		# load text input stuff
-		self.data.append(TextInput(name="Name",value = loadedJson['name']))
-		self.data.append(TextInput(name="Motivation",value=loadedJson['motivation']))
+		self.data.append(TextInput(name="Name",value = loadedPickle['name']))
+		self.data.append(TextInput(name="Motivation",value=loadedPickle['motivation']))
 
 		# run trees
 		treePath = self.treePath
@@ -183,18 +183,21 @@ class CharacterSheet:
 
 		# load skills
 		skills = PointBuy(name="Skills",max_level=3,starting_level=0,categories=getModel('model_skills.json'),starting_points=5,points_per_level = {1:0,2:1,3:3},root_id=6)
-		skills.categories = loadedJson['skills']
+		skills.categories = loadedPickle['skills']
 		self.data.append(skills)
 
 		# load trivia
 		trivia = PointBuy(name="Trivia",max_level=1,starting_level=0,point_per_level = {0:0,1:1},categories=getModel('model_trivia.json'),root_id=9)
-		trivia.categories = loadedJson['trivia']
+		trivia.categories = loadedPickle['trivia']
 		self.data.append(trivia)
 
 		# load gear assignments
 		## TODO
 		assign_abstract_gear = AssignAbstractGear()
-		assign_abstract_gear.gear += loadedJson['assigned_gear']
+		assign_abstract_gear.assign(self)
+		assign_abstract_gear.gear += loadedPickle['assigned_gear']
+		for weapon_pickle in loadedPickle['weapon_pickles']:
+			assign_abstract_gear.weapons.append(pickle.loads(weapon_pickle))
 		self.data.append(assign_abstract_gear)
 
 		# flush and return
@@ -207,26 +210,52 @@ class CharacterSheet:
 		if not self.filled:
 			log.warning("Cannot save incomplete character")
 			return False
-		with open(file_path,'w') as wf:
-			wf.write('{')
-			# version
-			wf.write(f'"__version__":"{self.__version__}"')
-			# treePath
-			wf.write(',"treePath":')
-			wf.write(json.dumps(self.treePath))
-			# text fields
-			wf.write(f',"name":"{self.choice_names["Name"]}"')
-			wf.write(f',"motivation":"{self.choice_names["Motivation"]}"')
-			for node in self.data:
-				if node.name == "Skills":
-					# skills
-					wf.write(f',"skills":{json.dumps(node.categories)}')
-				elif node.name == "Trivia":
-					# trivia
-					wf.write(f',"trivia":{json.dumps(node.categories)}')
-				elif node.name == "Assign Abstract Gear":
-					wf.write(f',"assigned_gear":{json.dumps(node.gear)}')
-			wf.write('}')
+		# create dictionary of values
+		outDict = {}
+		outDict['__version__'] = self.__version__
+		outDict['treePath'] = self.treePath
+		outDict['name'] = self.choice_names["Name"]
+		outDict['motivation'] = self.choice_names["Motivation"]
+		for node in self.data:
+			if node.name == "Skills":
+				# skills
+				outDict["skills"] = dict(node.categories)
+			elif node.name == "Trivia":
+				# trivia
+				outDict["trivia"]=dict(node.categories)
+			elif node.name == "Assign Abstract Gear":
+				# non-weapon gear
+				outDict["assigned_gear"]=node.gear
+				# modded weapons
+				outDict["weapon_pickles"]=[]
+				for weapon in self.weapons:
+					outDict["weapon_pickles"].append(pickle.dumps(weapon))
+		with open(file_path,'wb') as wf:
+			# wf.write('{')
+			# # version
+			# wf.write(f'"__version__":"{self.__version__}"')
+			# # treePath
+			# wf.write(',"treePath":')
+			# wf.write(json.dumps(self.treePath))
+			# # text fields
+			# wf.write(f',"name":"{self.choice_names["Name"]}"')
+			# wf.write(f',"motivation":"{self.choice_names["Motivation"]}"')
+			# for node in self.data:
+			# 	if node.name == "Skills":
+			# 		# skills
+			# 		wf.write(f',"skills":{json.dumps(node.categories)}')
+			# 	elif node.name == "Trivia":
+			# 		# trivia
+			# 		wf.write(f',"trivia":{json.dumps(node.categories)}')
+			# 	elif node.name == "Assign Abstract Gear":
+			# 		# non-weapon gear
+			# 		wf.write(f',"assigned_gear":{json.dumps(node.gear)}')
+			# 		# modded weapons
+			# 		wf.write(f',"weapon_pickles":["')
+			# 		wf.write('","'.join(["weapon_pickled="+str(base64.b64encode(pickle.dumps(weapon))) for weapon in self.weapons]))
+			# 		wf.write(f'"]')
+			# wf.write('}')
+			pickle.dump(outDict,wf)
 		return True
 
 	def apply(self,option)->bool:

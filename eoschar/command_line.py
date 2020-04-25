@@ -63,11 +63,12 @@ def main():
 
 	if args.command == "new":
 		# behavior for creating a new character
+		print("") # blank line
 		interface.createNewCharacter()
 		interface.menu()
 	elif args.command == "load":
 		# behavior for loading an existing character
-		print(f"Loading an existing character from file.\nSource file: {args.file}")
+		print("") # blank line
 		interface.loadCharacter(args.file)
 		interface.menu()
 	elif args.command == "tree":

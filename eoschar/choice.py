@@ -5,7 +5,7 @@ log = logging.getLogger(__name__)
 import copy, random, sys
 from collections import defaultdict
 from .func import getModel
-from .weapon import Weapon
+from .weapon import Weapon, Modification
 from .dietype import DieType
 
 class Choice:
@@ -298,7 +298,10 @@ class CombatSpecialty(Choice):
 			parts = item.split()
 			if parts[0] == "!":
 				if parts[1] == 'abstract':
-					pass
+					if parts[2] == 'weapon':
+						character_sheet._abstract_weapons[parts[3]] += 1
+					else:
+						log.error(f"Failed to parse item in {self.name}.gear: {item}")
 				elif parts[1] == 'weapon':
 					character_sheet._raw_weapons.append(getModel('model_weapons.json')[parts[2]])
 				else:
@@ -595,15 +598,88 @@ class AssignAbstractGear(Choice):
 		self.ref_grenades = {"A":[],"B":[],"C":[]}
 		self.ref_ammunition = {"A":[],"B":[],"C":[]}
 		self.ref_weapons = {"Ranged":[],"Melee":[]}
-		## add all potions
+		# empty final weapon/gear list
+		self.weapons = []
+		self.gear = []
+
+		##### ACTUALLY DO THE ADDING
+
+		## add all POTIONS
 		potion_model = getModel('model_potions.json')
 		for p in potion_model:
 			self.ref_potions[p['level']].append(p['name'])
-		## add all modifications
+
+		## add all MODIFICATIONS
+		## level A
 		modification_model = getModel('model_modifications.json')
-		##### ACTUALLY DO THE ADDING
-		## add all grenades
-		## add all ammunition
+		### bolt_thrower
+		bolt_thrower = Modification(**modification_model["Bolt-Thrower"],range=lambda r: 50)
+		self.ref_modifications[bolt_thrower.level].append(bolt_thrower)
+		### breacher_muzzle
+		breacher_muzzle = Modification(**modification_model["Breacher Muzzle"],range=lambda r: 20)
+		self.ref_modifications[breacher_muzzle.level].append(breacher_muzzle)
+		### chem_pipes
+		chem_pipes = Modification(**modification_model["Chem-Pipes"])
+		self.ref_modifications[chem_pipes.level].append(chem_pipes)
+		### concealable
+		concealable = Modification(**modification_model["Concealable"])
+		self.ref_modifications[concealable.level].append(concealable)
+		### double_barrel
+		double_barrel = Modification(**modification_model["Double-Barrel"])
+		self.ref_modifications[double_barrel.level].append(double_barrel)
+		### gene_lock
+		gene_lock = Modification(**modification_model["Gene-Lock"])
+		self.ref_modifications[gene_lock.level].append(gene_lock)
+		### large
+		large = Modification(**modification_model["Large"],reach=lambda r: r+1)
+		self.ref_modifications[large.level].append(large)
+		### stealth_mod
+		stealth_mod = Modification(**modification_model["Stealth Mod"])
+		self.ref_modifications[stealth_mod.level].append(stealth_mod)
+		## level B
+		### auto_targeter
+		auto_targeter = Modification(**modification_model["Auto Targeter"],accuracy=lambda a: a+1)
+		self.ref_modifications[auto_targeter.level].append(auto_targeter)
+		### brutal
+		brutal = Modification(**modification_model["Brutal"],reach=lambda r: r+1)
+		self.ref_modifications[brutal.level].append(brutal)
+		### paired
+		paired = Modification(**modification_model["Paired"],reach=lambda r: 2)
+		self.ref_modifications[paired.level].append(paired)
+		### plas_core
+		plas_core = Modification(**modification_model["Plas-Core"],reach=lambda r: r+1)
+		self.ref_modifications[plas_core.level].append(plas_core)
+		### resin_tank
+		resin_tank = Modification(**modification_model["Resin Tank"])
+		self.ref_modifications[resin_tank.level].append(resin_tank)
+		### shock_wires
+		shock_wires = Modification(**modification_model["Shock Wires"])
+		self.ref_modifications[shock_wires.level].append(shock_wires)
+		### overcharged_plas_core
+		overcharged_plas_core = Modification(**modification_model["Overcharged Plas-Core"],ap=lambda a: 3)
+		self.ref_modifications[overcharged_plas_core.level].append(overcharged_plas_core)
+		### chemtrace_ammunition
+		chemtrace_ammunition = Modification(**modification_model["Chemtrace Ammunition"])
+		self.ref_modifications[chemtrace_ammunition.level].append(chemtrace_ammunition)
+
+		## add all GRENADES
+		grenade_model = getModel('model_grenades.json')
+		for level in grenade_model.keys():
+			self.ref_grenades[level] = grenade_model[level]
+
+		## add all AMMUNITION
+		ammunition_model = getModel('model_ammunition.json')
+		for level in ammunition_model.keys():
+			self.ref_ammunition[level] = ammunition_model[level]
+
+		## add all WEAPONS
+		weapon_model = getModel('model_weapons.json')
+		for wKey in weapon_model.keys():
+			weapon = weapon_model[wKey]
+			if weapon['range'] > 0:
+				self.ref_weapons['Ranged'].append(weapon)
+			elif weapon['reach'] >0:
+				self.ref_weapons['Melee'].append(weapon)
 
 	def assign(self,character_sheet):
 		## weapons before modifications
@@ -617,6 +693,15 @@ class AssignAbstractGear(Choice):
 		self.abstract_kits = character_sheet._abstract_kits
 
 	def implement(self,character_sheet,*args,**kwargs):
+		## add weapons to character_sheet.weapons
+		for w in self.weapons:
+			character_sheet.weapons.append(w)
+		## add gear to character_sheet.gear
+		for item in self.gear:
+			character_sheet.gear.append(item)
+
+		## finally, count duplicate items in character_sheet.gear
+		## and format them appropriately
 		counted = defaultdict(int)
 		for item in character_sheet.gear:
 			parts = item.split()
@@ -630,9 +715,17 @@ class AssignAbstractGear(Choice):
 		for item in counted.keys():
 			if counted[item] > 1:
 				item = item + f" ({counted[item]})"
-			else:
+			else: # certain item types should always have a number, even (1)
 				for level in self.ref_potions.keys():
 					for p in self.ref_potions[level]:
+						if p == item:
+							item = item + " (1)"
+				for level in self.ref_ammunition.keys():
+					for p in self.ref_ammunition[level]:
+						if p == item:
+							item = item + " (1)"
+				for level in self.ref_grenades.keys():
+					for p in self.ref_grenades[level]:
 						if p == item:
 							item = item + " (1)"
 			character_sheet.gear.append(item)

@@ -11,14 +11,24 @@ from .options import trees as TREES
 
 
 
-PROMPT = "#"
+PROMPT = "# "
 
 
 def chooseOne(choices:list,symbol=PROMPT,exit_message="Abort character creation process?"):
 	"""Returns input prompted with 'symbol'"""
 	valid = [i for i in range(len(choices))]
 	for i in valid:
-		print(f"[{i}] {choices[i].name}")
+		try:
+			cName = choices[i].name
+		except AttributeError:
+			try:
+				cName = choices[i]['name']
+			except (KeyError,TypeError) as e:
+				try:
+					cName = choices[i]['Name']
+				except (KeyError,TypeError) as e:
+					cName = choices[i]
+		print(f"[{i}] {cName}")
 	try:
 		selection = input(symbol)
 		if selection == "exit":
@@ -81,14 +91,8 @@ class Interface:
 			Whether this node has already been implemented
 		"""
 		try:
-			# skip TODO nodes
-			if node.name == "Assign Abstract Gear":
-				log.warning(f"Skipping {node.name}: Not implemented")
-				character_sheet.apply(node)
-				character_sheet.data.append(node)
-
 			# first implement this node
-			if not retry and node.name not in ["Trivia",'Skills','Name','Motivation']:
+			if not retry and node.name not in ["Trivia",'Skills','Name','Motivation','Assign Abstract Gear']:
 				log.debug(f"Applying {node.name}")
 				character_sheet.apply(node)
 				character_sheet.data.append(node)
@@ -187,6 +191,71 @@ class Interface:
 				character_sheet.data.append(node)
 			elif node.name in ["Name","Motivation"]:
 				node.promptUser(PROMPT)
+				character_sheet.apply(node)
+				character_sheet.data.append(node)
+			elif node.name == "Assign Abstract Gear":
+				print("Throughout character creation, you have gained some 'abstract' gear (e.g. '1 level B grenade'). You will now make those choices.")
+				# This is complicated
+				# LOAD DATA
+				node.assign(character_sheet)
+				# ABSTRACT WEAPONS -> RAW WEAPONS
+				for variety in node.abstract_weapons.keys():
+					if variety == "Any":
+						vString = ""
+						weaponOptions = node.ref_weapons["Melee"]+node.ref_weapons["Ranged"]
+					else:
+						vString = f"{variety} "
+						weaponOptions = node.ref_weapons[variety]
+					while node.abstract_weapons[variety] > 0:
+						print(f"Choose {node.abstract_weapons[variety]} more {vString}weapon(s):")
+						intSelection,selection = chooseOne(weaponOptions)
+						if selection == False:
+							return False
+						else:
+							node.raw_weapons.append(selection)
+							node.abstract_weapons[variety] -= 1
+							print(f"Successfully added a {selection['name']}.")
+					print(f"No more {vString}weapons to assign. Moving on.")
+				# MODIFICATIONS (ASSIGN TO WEAPONS)
+				## TODO
+				for level in node.abstract_modifications.keys():
+					pass
+				# AMMUNITION
+				for level in node.abstract_ammunition.keys():
+					ammunitionOptions = node.ref_ammunition[level]
+					while node.abstract_ammunition[level] > 0:
+						print(f"Choose {node.abstract_ammunition[level]} more round(s) of level {level} ammunition:")
+						intSelection,selection = chooseOne(ammunitionOptions)
+						if selection == False:
+							return False
+						else:
+							node.gear.append(selection)
+							node.abstract_ammunition[level] -= 1
+				# POTIONS
+				for level in node.abstract_potions.keys():
+					potionOptions = node.ref_potions[level]
+					while node.abstract_potions[level] > 0:
+						print(f"Choose {node.abstract_potions[level]} more level {level} potion(s):")
+						intSelection,selection = chooseOne(potionOptions)
+						if selection == False:
+							return False
+						else:
+							node.gear.append(selection)
+							node.abstract_potions[level] -= 1
+				# GRENADES
+				for level in node.abstract_grenades.keys():
+					grenadeOptions = node.ref_grenades[level]
+					while node.abstract_grenades[level] > 0:
+						print(f"Choose {node.abstract_grenades[level]} more level {level} grenades(s):")
+						intSelection,selection = chooseOne(grenadeOptions)
+						if selection == False:
+							return False
+						else:
+							node.gear.append(selection)
+							node.abstract_grenades[level] -= 1
+				# KITS
+
+				# Finally, apply this node
 				character_sheet.apply(node)
 				character_sheet.data.append(node)
 			if len(node.children) > 0:

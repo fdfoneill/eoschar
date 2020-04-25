@@ -9,7 +9,7 @@
 		],
 		"gear":[
 			"! weapon Pistol",
-			"Dose of Yender’s Formula",
+			"Dose of Yender's Formula",
 			"! abstract weapon Melee"
 		]
 	},
@@ -23,20 +23,20 @@
 		],
 		"gear":[
 			"! weapon Pistol",
-			"Dose of Yender’s Formula"
+			"Yender's Formula"
 		]
 	},
 	"Tactician":{"name":"Tactician",
 		"description":"",
 		"traits":[
 			{"Name":"Get Back in the Fight",
-			"Description":"During the “Change State/Armament” portion of your turn, you may choose up to three allies within 10 yards of you whom you can see. Those allies may each make a Difficulty 6 Spirit roll. On a success, they may immediately change their State as if it were their turn. This trait applies regardless of whether or not you choose to change your own State or armament."},
+			"Description":"During the 'Change State/Armament' portion of your turn, you may choose up to three allies within 10 yards of you whom you can see. Those allies may each make a Difficulty 6 Spirit roll. On a success, they may immediately change their State as if it were their turn. This trait applies regardless of whether or not you choose to change your own State or armament."},
 			{"Name":"Suppressing Fire",
 			"Description":"When you take the Shoot action or cast a ranged spell attack, you may declare that you are providing suppressing fire. If you do so, choose up to twice as many targets as usual. Targets may become Pinned as normal; however, the attack then ends (i.e. no hit rolls are made, no damage is rolled). This trait may not be used when firing Overwatch."}
 		],
 		"gear":[
 			"! weapon Pistol",
-			"Dose of Yender’s Formula"
+			"Yender's Formula"
 		]
 	},
 	"Healer":{"name":"Healer",
@@ -45,11 +45,11 @@
 			{"Name":"Field Dressing",
 			"Description":"You do not need to spend Stamina when making your first Heal check on each turn. Any additional Heal checks require that you spend Stamina as normal."},
 			{"Name":"Autostimm",
-			"Description":"The first time during a battle that you start your turn Down, you may attempt to apply Yender’s Formula to yourself. If you do so, you must roll a Resist Physical check in place of the usual Heal check (this represents the fact that you are working through blinding pain)."}
+			"Description":"The first time during a battle that you start your turn Down, you may attempt to apply Yender's Formula to yourself. If you do so, you must roll a Resist Physical check in place of the usual Heal check (this represents the fact that you are working through blinding pain)."}
 		],
 		"gear":[
 			"! weapon Pistol",
-			" 4 Dose of Yender’s Formula"
+			"4 Yender's Formula"
 		]
 	}
 }

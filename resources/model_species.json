@@ -2,7 +2,7 @@
 	"Human":{"name":"Human",
 		"base_qualities":{
 			"Brawn":10,
-			"Brace":10,
+			"Grace":10,
 			"Wits":10,
 			"Spirit":10
 		},

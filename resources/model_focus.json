@@ -26,7 +26,7 @@
 		],
 		"trait":{
 			"name":"Corpsman",
-			"description":"Whenever you must roll on the Yender’s Formula mishap table, you may choose to reroll your result. You may never reroll more than once."
+			"description":"Whenever you must roll on the Yender's Formula mishap table, you may choose to reroll your result. You may never reroll more than once."
 		}
 	},
 	{"name":"Hunter",
@@ -76,7 +76,7 @@
 		],
 		"trait":{
 			"name":"Holy Weapon",
-			"description":"You can cast offensive magic. When you do so, you must choose a melee weapon you are currently wielding. The spell’s Stamina cost is reduced by 1, and it is stored in the chosen weapon instead of being cast normally. The next time you Go For the Kill using that weapon, the stored spell is discharged instead of the weapon’s normal effects. The discharged spell may only target foes with whom you are In Combat, but it hits automatically. You can store up to 3 spells at a time with this trait. A weapon can only hold one spell at a time."
+			"description":"You can cast offensive magic. When you do so, you must choose a melee weapon you are currently wielding. The spell's Stamina cost is reduced by 1, and it is stored in the chosen weapon instead of being cast normally. The next time you Go For the Kill using that weapon, the stored spell is discharged instead of the weapon's normal effects. The discharged spell may only target foes with whom you are In Combat, but it hits automatically. You can store up to 3 spells at a time with this trait. A weapon can only hold one spell at a time."
 		}
 	},
 	{"name":"Alchemist",

@@ -194,7 +194,7 @@ class CharacterSheet:
 		# load gear assignments
 		## TODO
 		assign_abstract_gear = AssignAbstractGear()
-		assign_abstract_gear.gear = loadedJson['gear']
+		assign_abstract_gear.gear += loadedJson['assigned_gear']
 		self.data.append(assign_abstract_gear)
 
 		# flush and return
@@ -225,7 +225,7 @@ class CharacterSheet:
 					# trivia
 					wf.write(f',"trivia":{json.dumps(node.categories)}')
 				elif node.name == "Assign Abstract Gear":
-					wf.write(f',"gear":{json.dumps(node.gear)}')
+					wf.write(f',"assigned_gear":{json.dumps(node.gear)}')
 			wf.write('}')
 		return True
 

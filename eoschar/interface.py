@@ -224,7 +224,7 @@ class Interface:
 				for level in node.abstract_ammunition.keys():
 					ammunitionOptions = node.ref_ammunition[level]
 					while node.abstract_ammunition[level] > 0:
-						print(f"Choose {node.abstract_ammunition[level]} more round(s) of level {level} ammunition:")
+						print(f"Choose {node.abstract_ammunition[level]} more round(s) of ammunition:") # NOTE: no level for ammo. Default "B"
 						intSelection,selection = chooseOne(ammunitionOptions)
 						if selection == False:
 							return False
@@ -254,6 +254,16 @@ class Interface:
 							node.gear.append(selection)
 							node.abstract_grenades[level] -= 1
 				# KITS
+				for level in node.abstract_kits.keys():
+					kitOptions = node.ref_kits[level]
+					while node.abstract_kits[level] > 0:
+						print(f"Choose {node.abstract_kits[level]} more kits(s):") # NOTE: no level for kits. Default "A"
+						intSelection,selection = chooseOne(kitOptions)
+						if selection == False:
+							return False
+						else:
+							node.gear.append(selection)
+							node.abstract_kits[level] -= 1
 
 				# Finally, apply this node
 				character_sheet.apply(node)

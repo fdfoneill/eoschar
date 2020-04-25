@@ -681,6 +681,11 @@ class AssignAbstractGear(Choice):
 			elif weapon['reach'] >0:
 				self.ref_weapons['Melee'].append(weapon)
 
+		## add all KITS
+		kit_model = getModel('model_kits.json')
+		for level in kit_model.keys():
+			self.ref_kits[level] = kit_model[level]
+
 	def assign(self,character_sheet):
 		## weapons before modifications
 		self.raw_weapons = character_sheet._raw_weapons

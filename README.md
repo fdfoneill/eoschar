@@ -19,39 +19,56 @@ The current version of `eoschar` works through a command-line interface. (Future
 
 ```
 > eoschar new
-Creating a new character from scratch.
+Creating new character from scratch.
+
+You will be guided through the steps of character creations. At each step, you will be presented with a series of options.
+To exit character creator, enter 'exit'
 Choose a Species:
+[0] Human
 [1] Elek
-[2] Human
-[3] Parathan
-[4] Primas-Ika
-[5] Yasre
->>>5
-Selected Yasre.
-Species choice unlocks new choices!
+[2] Parathan
+[3] Primas-Ika
+[4] Yasre
+# 4
+Successfully selected Yasre for your Species.
+Selection opens up new options.
 Choose a Species Trait:
-[1] Vian Moves Slowly
-[2] Unrivaled Reaction
->>>1
-Selected Vian Moves Slowly.
-End of category.
+[0] By His Righteous Code
+[1] The Old Hunger
+# 1
+Successfully selected The Old Hunger for your Species Trait.
+Done with this choice tree! Moving on.
 Choose a Talent:
-[1] Brawn
-[2] Grace
-[3] Wits
-[4] Spirit
->>> Grace
-Chose Grace.
-End of category.
+[0] Brawn
+[1] Grace
+[2] Wits
+[3] Spirit
+# 1
+Successfully selected Grace for your Talent.
+Done with this choice tree! Moving on.
+Choose a Die to Boost:
+[0] Shooting Die
+[1] Fighting Die
+# 1
 
-##### Example Truncated #####
+## EXAMPLE TRUNCATED ##
 
-Character fully generated.
-[1] Save character data
-[2] Create character sheet
-[3] Edit character
-[4] Exit
->>>
+Input your character's Name:
+# Laredo
+Done with this choice tree! Moving on.
+Successfully created 'Laredo'!
+
+MAIN MENU
+---------
+Current character: Laredo
+Choose an option:
+[0] New Character
+[1] Load Character from File
+[2] Save Character
+[3] Edit Character
+[4] Output Character Sheet to PDF
+[5] Exit (or type 'exit')
+# 
 ```
 
 # How to Use

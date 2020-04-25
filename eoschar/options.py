@@ -3,7 +3,7 @@ logging.basicConfig(level=os.environ.get("LOGLEVEL","INFO"))
 log = logging.getLogger(__name__)
 
 import copy
-from .choice import Choice, Species, Training, Focus, CombatSpecialty, Background, TextInput, Trait, Item, PointBuy, AssignAbstractGear
+from .choice import Choice, Species, Talent, Training, Focus, CombatSpecialty, Background, TextInput, Trait, Item, PointBuy, AssignAbstractGear
 from .weapon import Weapon
 from .dietype import DieType
 from .func import getModel
@@ -85,22 +85,14 @@ trees.append(species)
 talent = Choice(name="Talent",children_category="Talent",root_id=2)
 
 # add individual talents
-## talent prerequisite factory
-def make_tlnt_preq(qual):
-	def tlnt_preq(character_sheet):
-		for choice in character_sheet.data:
-			if choice.name == f"People of the Wandering God ({qual})":
-				return False
-		return True
-	return tlnt_preq
 ## brawn
-talent.addChild(Choice(name="Brawn",implementation=lambda character_sheet: character_sheet.qualities["Brawn"].improve(),prerequisites=[make_tlnt_preq("Brawn")]))
+talent.addChild(Talent(name="Brawn",implementation=lambda character_sheet: character_sheet.qualities["Brawn"].improve()))
 ## grace
-talent.addChild(Choice(name="Grace",implementation=lambda character_sheet: character_sheet.qualities["Grace"].improve(),prerequisites=[make_tlnt_preq("Grace")]))
+talent.addChild(Talent(name="Grace",implementation=lambda character_sheet: character_sheet.qualities["Grace"].improve()))
 ## wits
-talent.addChild(Choice(name="Wits",implementation=lambda character_sheet: character_sheet.qualities["Wits"].improve(),prerequisites=[make_tlnt_preq("Wits")]))
+talent.addChild(Talent(name="Wits",implementation=lambda character_sheet: character_sheet.qualities["Wits"].improve()))
 ## spirit
-talent.addChild(Choice(name="Spirit",implementation=lambda character_sheet: character_sheet.qualities["Spirit"].improve(),prerequisites=[make_tlnt_preq("Spirit")]))
+talent.addChild(Talent(name="Spirit",implementation=lambda character_sheet: character_sheet.qualities["Spirit"].improve()))
 
 # cascade and append
 talent.cascadeRootId()
@@ -213,7 +205,7 @@ trees.append(focus)
 # Maybe: implement() each Choice *as* it's being added to CharacterSheet.data? Also could checkPrerequisites() at that
 # time. Then, when actually fully building, you flush() the sheet, which reloads it cleanly.
 
-skills = PointBuy(name="Skills",max_level=3,starting_level=1,point_per_level = {2:1,3:3},categories=getModel('model_skills.json'),root_id=6)
+skills = PointBuy(name="Skills",max_level=3,starting_level=0,categories=getModel('model_skills.json'),starting_points=5,points_per_level = {1:0,2:1,3:3},root_id=6)
 trees.append(skills)
 
 
@@ -226,6 +218,7 @@ model = getModel('model_combat_specialty.json')
 
 # close combat
 cso1 = CombatSpecialty(**model['Close Combat'],children_category= "Gear Option")
+cso1.addImplementation(lambda character_sheet: character_sheet.combat_stats["Fighting Die"].improve())
 cso1.addChild(Item(name="2 level A modifications",level="A",n=2,gear_type="modification",abstract=True))
 cso1.addChild(Item(name="1 level B modification",level="B",n=1,gear_type="modification",abstract=True))
 # add as child to combat_specialty
@@ -233,6 +226,7 @@ combat_specialty.addChild(cso1)
 
 # ranged
 cso2 = CombatSpecialty(**model['Ranged'],children_category= "Gear Option")
+cso2.addImplementation(lambda character_sheet: character_sheet.combat_stats["Shooting Die"].improve())
 # sub-option 1
 cso2_o1 = Item(name="Long Arm and choice of modifications",n=1,gear_type="weapon",item_name="Long Arm",abstract=True,children_category= "Gear Sub-Option")
 cso2_o1.addChild(Item(name="2 level A modifications",level="A",n=2,gear_type="modification",abstract=True))
@@ -275,6 +269,9 @@ background = Choice(name="Background",children_category="Background",root_id=8)
 # add individual backgrounds
 for b in getModel('model_background.json'):
 	background.addChild(Background(**b))
+for b in background.children:
+	if b.name in ["Urchin","Corporate","Noble","Militia","Conscript"]:
+		b.addImplementation(lambda character_sheet: character_sheet.combat_stats.update({'AV':1}))
 
 # cascade and append
 background.cascadeRootId()
@@ -286,7 +283,7 @@ trees.append(background)
 # trivia
 ########
 
-trivia = PointBuy(name="Trivia",max_level=1,starting_level=0,point_per_level = {1:1},categories=getModel('model_trivia.json'),root_id=9)
+trivia = PointBuy(name="Trivia",max_level=1,starting_level=0,starting_points = 2,point_per_level = {0:0,1:1},categories=getModel('model_trivia.json'),root_id=9)
 trees.append(trivia)
 
 

@@ -234,6 +234,17 @@ class Species(Choice):
 		return True
 
 
+class Talent(Choice):
+	def __init__(self,**kwargs):
+		super().__init__(**kwargs)
+		def prq(character_sheet):
+			for c in character_sheet.data:
+				if c.name == f"People of the Wandering God ({self.name})":
+					return False
+			return True
+		self.prerequisites.append(prq)
+
+
 class Training(Choice):
 	"""A class to represent an EoS Training
 
@@ -328,7 +339,7 @@ class TextInput(Choice):
 	"""A class to represent an EoS motivation."""
 	def __init__(self,**kwargs):
 		super().__init__(**kwargs)
-		self.value = ""
+		self.value = kwargs.get("value","")
 
 	def promptUser(self,prompt):
 		print(f"Input your character's {self.name}:")
@@ -435,17 +446,21 @@ class PointBuy(Choice):
 		self.starting_points = kwargs.get('starting_points',0)
 		self.starting_level = kwargs.get('starting_level',0)
 		self.max_level = kwargs.get('max_level',None)
-		self.point_per_level = kwargs.get('points_per_level',defaultdict(lambda:1))
+		self.points_per_level = kwargs.get('points_per_level',defaultdict(lambda:1))
 		self.categories = {}
+		# check if absolute or additive
+		self.absolute = kwargs.get("absolute",False)
 		# try loading passed categories
 		try:
 			baseCats = kwargs['categories']
 			if self.name=="Skills":
-				for c in baseCats:
-					self.categories[c['name']] = {'bought_levels':0,'base_levels':0}
+				 for c in baseCats:
+				 	self.categories[c['name']] = {'bought_levels':0,'base_levels':0}
+				#self.categories = defaultdict(lambda:{'bought_levels':0,'base_levels':0})
 			elif self.name=="Trivia":
 				for c in baseCats:
-					self.categories[c] = {'bought_levels':0,'base_levels':0}
+					#self.categories[c] = {'bought_levels':0,'base_levels':0}
+					self.categories = defaultdict(lambda:{'bought_levels':0,'base_levels':0})
 			else:
 				log.error(f"PointBuy.name expected one of ['Skills','Trivia'], got '{self.name}'.")
 		except KeyError:
@@ -456,10 +471,13 @@ class PointBuy(Choice):
 		if self.name == "Skills":
 			for skill in self.categories.keys():
 				if self.categories[skill]['bought_levels']> 0:
-					character_sheet.skills[skill]['level'] += skill['bought_levels']
+					if not self.absolute:
+						character_sheet.skills[skill]['level'] += self.categories[skill]['bought_levels']
+					else:
+						character_sheet.skills[skill]['level'] = self.categories[skill]['bought_levels'] + self.categories[skill]['base_levels']
 		elif self.name == "Trivia":
 			for topic in self.categories.keys():
-				if self.categories[topic]['bought_levels'] > 0:
+				if self.categories[topic]['bought_levels'] + self.categories[topic]['base_levels'] > 0:
 					character_sheet.trivia.append(topic)
 			character_sheet.trivia = list(set(character_sheet.trivia))
 		else:
@@ -483,12 +501,12 @@ class PointBuy(Choice):
 			trivia or skills. Should be loaded from
 			a CharacterSheet object.
 		"""
-		if isinstance(category_obj,list):
+		if self.name == "Trivia":
 			for topic in category_obj:
-				self.categories[topic]['base_levels'] += 1
-		elif isinstance(category_obj,dict):
+				self.categories[topic]['base_levels'] = 1
+		elif self.name=="Skills":
 			for skill in category_obj.keys():
-				self.categories[skill]['base_levels'] += category_obj[skill]['level']
+					self.categories[skill]['base_levels'] = category_obj[skill]['level']
 		else:
 			log.error("PointBuy.load() 'category_obj' argument must be list or dict")
 
@@ -501,11 +519,11 @@ class PointBuy(Choice):
 		True.
 		"""
 		try:
-			currentLevel = self.categories['category_name']['bought_levels']+self.categories['category_name']['base_levels']
+			currentLevel = self.categories[category_name]['bought_levels']+self.categories[category_name]['base_levels']
 		except KeyError:
 			# add the category if it does not exist (i.e. new Trivia topic)
-			self.categories['category_name'] = {'bought_levels':0,'base_levels':0}
-			currentLevel = self.categories['category_name']['bought_levels']+self.categories['category_name']['base_levels']
+			self.categories[category_name] = {'bought_levels':0,'base_levels':0}
+			currentLevel = self.categories[category_name]['bought_levels']+self.categories[category_name]['base_levels']
 		required_points = self.points_per_level[currentLevel+1]
 		if currentLevel >= self.max_level:
 			log.warning(f"{category_name} is already at maximum level of {self.max_level}!")
@@ -514,7 +532,7 @@ class PointBuy(Choice):
 			log.warning(f"Insufficient points to level up {category_name}! Raising to level {currentLevel+1} requires {required_points} points; you have {self.current_points}.")
 			return False
 		self.current_points -= required_points
-		self.categories['category_name']['bought_levels'] += 1
+		self.categories[category_name]['bought_levels'] += 1
 		return True
 
 	def levelDown(self,category_name)->bool:
@@ -525,16 +543,16 @@ class PointBuy(Choice):
 		True.
 		"""
 		try:
-			currentLevel = self.categories[category_name]['bought_levels']+self.categories['category_name']['base_levels']
+			currentLevel = self.categories[category_name]['bought_levels']+self.categories[category_name]['base_levels']
 		except KeyError:
 			log.warning(f"{category_name} not found")
 			return False
 		redeemed_points = self.points_per_level[currentLevel]
-		if self.categories['category_name']['bought_levels'] <= self.starting_level:
+		if self.categories[category_name]['bought_levels'] <= self.starting_level:
 			log.warning(f"No levels of {category_name} to redeem. Any remaining levels are from another source (e.g. Training, Focus, Background).")
 			return False
 		self.current_points += redeemed_points
-		self.categories['category_name']['bought_levels'] -= 1
+		self.categories[category_name]['bought_levels'] -= 1
 		return True
 
 
@@ -580,7 +598,7 @@ class AssignAbstractGear(Choice):
 		## add all potions
 		potion_model = getModel('model_potions.json')
 		for p in potion_model:
-			self.ref_potions[p['level']] = p['name']
+			self.ref_potions[p['level']].append(p['name'])
 		## add all modifications
 		modification_model = getModel('model_modifications.json')
 		##### ACTUALLY DO THE ADDING
@@ -599,4 +617,23 @@ class AssignAbstractGear(Choice):
 		self.abstract_kits = character_sheet._abstract_kits
 
 	def implement(self,character_sheet,*args,**kwargs):
-		pass
+		counted = defaultdict(int)
+		for item in character_sheet.gear:
+			parts = item.split()
+			try:
+				n = int(parts[0])
+				item = " ".join(parts[1:])
+			except ValueError:
+				n = 1
+			counted[item] += n
+		character_sheet.gear = []
+		for item in counted.keys():
+			if counted[item] > 1:
+				item = item + f" ({counted[item]})"
+			else:
+				for level in self.ref_potions.keys():
+					for p in self.ref_potions[level]:
+						if p == item:
+							item = item + " (1)"
+			character_sheet.gear.append(item)
+		character_sheet.gear.sort()

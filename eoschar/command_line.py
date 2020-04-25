@@ -7,13 +7,17 @@ from .charactersheet import CharacterSheet
 from .choice import Choice, Item
 from .options import trees as TREES
 from .interface import Interface
+from .sheetmaker import SheetMaker
 from ._version import __version__
 import argparse
 
 
 def makeExample():
-	log.warning("Not implemented")
-	pass
+	maker = SheetMaker()
+	sheet = CharacterSheet()
+	sheet.load('/Users/DanO/Documents/Games/Design/char_builder_v4/eoschar/temp/example_saved_character.txt')
+	maker.read(sheet)
+	maker.make(os.path.join(os.path.dirname(os.path.dirname(__file__)),"temp","example_output_sheet.pdf"))
 
 
 def main():
@@ -46,22 +50,26 @@ def main():
 
 	args = parser.parse_args()
 
+	## create interface object
+	interface = Interface()
+
 	## if no command was selected, print
 	## general help
 	try:
 		assert args.command
 	except:
-		parser.print_help(sys.stderr)
-		sys.exit(1)
+		print("Welcome to the Era of Silence Character Creator!")
+		interface.menu()
 
 	if args.command == "new":
 		# behavior for creating a new character
-		print("Creating a new character from scratch.")
-		pass
+		interface.createNewCharacter()
+		interface.menu()
 	elif args.command == "load":
 		# behavior for loading an existing character
 		print(f"Loading an existing character from file.\nSource file: {args.file}")
-		pass
+		interface.loadCharacter(args.file)
+		interface.menu()
 	elif args.command == "tree":
 		for t in TREES:
 			t.display()

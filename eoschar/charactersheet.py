@@ -3,8 +3,10 @@ logging.basicConfig(level=os.environ.get("LOGLEVEL","INFO"))
 log = logging.getLogger(__name__)
 
 import json, pickle, sys
-from .choice import Choice
+from ._version import __version__
+from .choice import Choice,TextInput,PointBuy,AssignAbstractGear
 from .dietype import DieType
+from .sheetmaker import SheetMaker
 from .func import getModel
 from .options import trees as TREES
 
@@ -72,13 +74,21 @@ class CharacterSheet:
 	apply: bool
 		Apply a Choice to the character
 		sheet.
+	flush
+	output: bool
+		Print the character sheet to a
+		beautiful pdf file.
+	edit: bool
+		TODO
 
 	"""
 
 	def __init__(self):
 		# blank options and data
+		self.__version__ = __version__
 		self.options=TREES
 		self.data=[]
+		self.treePath = []
 		self.filled = False
 
 		# initialize default game stats
@@ -131,12 +141,64 @@ class CharacterSheet:
 		self._abstract_grenades = {"A":0,"B":0,"C":0}
 		self._abstract_kits = {"A":0,"B":0,"C":0}
 
-	def load(self,file_path):
+	def load(self,file_path) -> bool:
 		"""Read data from text file"""
+		def autoTree(tree,path):
+			def doSelection(node,j) -> "node":
+				selection = node.children[j]
+				if not selection.checkPrerequisites(self):
+					log.warning("Prerequisites violation! Try again.")
+				self.apply(selection)
+				self.data.append(selection)
+				return selection
+			i = 0
+			node = tree
+			while len(node.children) > 0:
+				node = doSelection(node,path[i])
+				i += 1
+			return path[i:]
+
+		file_path = file_path.strip("'").strip('"')
 		with open(file_path,'r') as rf:
-			self.data = pickle.load(rf)
+			loadedJson = json.loads(rf.read())
+		if self.__version__ != loadedJson['__version__']:
+			log.warning(f"Loaded character created in version {loadedJson['__version__']}, you are running version {self.__version__}. Potential compatibility issues.")
+		self.treePath = loadedJson['treePath']
+
+		# load text input stuff
+		self.data.append(TextInput(name="Name",value = loadedJson['name']))
+		self.data.append(TextInput(name="Motivation",value=loadedJson['motivation']))
+
+		# run trees
+		treePath = self.treePath
+		try:
+			for t in TREES:
+				if t.name in ["Skills","Trivia","Name","Motivation","Assign Abstract Gear"]:
+					log.debug(f"Skipping {t.name}")
+				else:
+					treePath = autoTree(t,treePath)
+		except:
+			log.exception("Loaded tree path incompatible with options.trees")
+			return False
+
+		# load skills
+		skills = PointBuy(name="Skills",max_level=3,starting_level=0,categories=getModel('model_skills.json'),starting_points=5,points_per_level = {1:0,2:1,3:3},root_id=6)
+		skills.categories = loadedJson['skills']
+		self.data.append(skills)
+
+		# load trivia
+		trivia = PointBuy(name="Trivia",max_level=1,starting_level=0,point_per_level = {0:0,1:1},categories=getModel('model_trivia.json'),root_id=9)
+		trivia.categories = loadedJson['trivia']
+		self.data.append(trivia)
+
+		# load gear assignments
+		## TODO
+		self.data.append(AssignAbstractGear())
+
+		# flush and return
 		self.filled=True
 		self.flush()
+		return True
 
 	def save(self,file_path) ->bool:
 		"""Write data to text file"""
@@ -144,7 +206,23 @@ class CharacterSheet:
 			log.warning("Cannot save incomplete character")
 			return False
 		with open(file_path,'w') as wf:
-			pickle.dump(self.data,wf)
+			wf.write('{')
+			# version
+			wf.write(f'"__version__":"{self.__version__}"')
+			# treePath
+			wf.write(',"treePath":')
+			wf.write(json.dumps(self.treePath))
+			# text fields
+			wf.write(f',"name":"{self.choice_names["Name"]}"')
+			wf.write(f',"motivation":"{self.choice_names["Motivation"]}"')
+			for node in self.data:
+				if node.name == "Skills":
+					# skills
+					wf.write(f',"skills":{json.dumps(node.categories)}')
+				elif node.name == "Trivia":
+					# trivia
+					wf.write(f',"trivia":{json.dumps(node.categories)}')
+			wf.write('}')
 		return True
 
 	def apply(self,option)->bool:
@@ -165,3 +243,30 @@ class CharacterSheet:
 		for c in self.data:
 			self.apply(c)
 		return True
+
+	def output(self,pdf_path) -> bool:
+		"""Print the character sheet to a beautiful PDF file
+
+		***
+
+		Parameters
+		----------
+		pdf_path:str
+			Path to output file. Must end in .pdf extension.
+			If file exists, it will be overwritten.
+		"""
+		if not self.flush():
+			log.warning("Failed to flush, cannot output sheet")
+			return False
+		maker = SheetMaker()
+		try:
+			maker.read(self)
+			maker.make(pdf_path)
+			return True
+		except:
+			log.exception("Failed to output")
+			return False
+
+	def edit(self) -> bool:
+		"""TODO"""
+		return False

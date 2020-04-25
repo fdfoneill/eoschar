@@ -13,7 +13,17 @@ Role-Playing Game system. The eoschar module currently
 works through a command-line interface, but future versions
 will incorporate a graphic user interface (GUI).
 
-To generate a new character sheet, 
+To open the character creator, just type `eoschar` into the
+command line.
+
+***
+
+Subcommands
+-----------
+eoschar new
+	Jumps directly to new character creation
+eoschar load {path}
+	Load saved character data from file {path}
 """
 
 
@@ -21,6 +31,4 @@ import logging, os
 logging.basicConfig(level=os.environ.get("LOGLEVEL","INFO"))
 log = logging.getLogger(__name__)
 
-import json, sys
 from ._version import __version__
-from .interface import Interface

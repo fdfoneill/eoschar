@@ -24,10 +24,12 @@ class Weapon:
 		self._reach = kwargs.get('reach',None)
 		if self._range is None and self._reach is None:
 			self._reach = 1
+		self._accuracy = kwargs.get('accuracy',0)
 		self._ap = kwargs.get("ap",1)
 		# live version of paired attribues
 		self.range = self._range
 		self.reach = self._reach
+		self.accuracy = self._accuracy
 		self.ap = self._ap
 		# non-paired attributes
 		self.name = kwargs['name']
@@ -35,6 +37,9 @@ class Weapon:
 		self.heavy = kwargs.get("heavy",False)
 		self.special=[i for i in [kwargs.get("special","")] if i != ""]
 		self.modifications = {"A":[],"B":[],"C":[]}
+
+	def __repr__(self):
+		return f"<Instance of Weapon | name={self.name}>"
 
 class Modification:
 	"""A class to represent an EoS modification

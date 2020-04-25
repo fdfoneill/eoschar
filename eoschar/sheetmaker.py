@@ -200,6 +200,22 @@ class SheetMaker:
 		## label
 		pdf.set_xy(0.64,7.2)
 		pdf.cell(0.8,0.2,"Weapons")
+		## column_titles
+		pdf.set_font('Times',size=6,style="I")
+		pdf.set_y(7.45)
+		pdf.set_x(0.62)
+		pdf.cell(0.82,0.11,"Name")
+		pdf.set_x(1.44)
+		pdf.cell(0.5,0.11,"Range/Reach")
+		pdf.set_x(1.95)
+		pdf.cell(0.4,0.11,"Accuracy")
+		pdf.set_x(2.34)
+		pdf.cell(0.32,0.11,"AP")
+		#pdf.set_x(2.34)
+		pdf.cell(0.32,0.11,"Special")
+
+		# reset box label font
+		pdf.set_font('Times',size=12,style="B")
 
 		# add Money
 		## box
@@ -360,6 +376,62 @@ class SheetMaker:
 		pdf.set_font('Arial',size=10,style='')
 		pdf.set_xy(0.64,9.26)
 		pdf.cell(1.16,0.15,f"SA: {self.sheet.money}")
+
+		# WEAPONS
+		## make vertical lines
+		line_height = 1.26
+		pdf.set_y(7.57)
+		### name_border
+		pdf.set_x(0.62)
+		pdf.cell(0.82,line_height,border="R")
+		### range_border
+		pdf.set_x(1.44)
+		pdf.cell(0.5,line_height,border="R")
+		### accuracy_border
+		pdf.set_x(1.95)
+		pdf.cell(0.4,line_height,border="R")
+		### ap_border
+		pdf.set_x(2.34)
+		pdf.cell(0.32,line_height,border="R")
+		## add each weapon
+		for weapon in self.sheet.weapons: # each one is a Weapon object
+			#print(weapon)
+			pdf.set_font('Arial',size=8,style='')
+			# name
+			pdf.set_x(0.62)
+			pdf.cell(0.82,0.12,weapon.name,align="L",border="T")
+			# range / reach
+			#print(weapon.range)
+			#print(weapon.reach)
+			if (weapon.range is None) or (weapon.range <= 0):
+				r =weapon.reach
+			else:
+				r = weapon.range
+			pdf.set_x(1.44)
+			pdf.cell(0.5,0.12,str(r),align="C",border="T")
+			# accuracy
+			if weapon.accuracy == 0:
+				acc = "NA"
+			pdf.set_x(1.95)
+			pdf.cell(0.4,0.12,str(acc),align="C",border="T")
+			# ap
+			pdf.set_x(2.34)
+			pdf.cell(0.32,0.12,str(weapon.ap),align="C",border="T")
+			# special
+			if len(weapon.special) > 0:
+				specials = " ".join(weapon.special) 
+			else:
+				specials = " "
+			specials = specials.strip()
+			font_size = 8
+			cell_width = 2.31
+			max_rows = 4
+			while (pdf.get_string_width(specials)/cell_width) > max_rows:
+				font_size -= 0.01
+				pdf.set_font('Arial',size=font_size,style='')
+			pdf.multi_cell(cell_width,0.11,specials,border="T")
+			pdf.ln(10)
+
 
 
 		########	

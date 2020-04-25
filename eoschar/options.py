@@ -141,7 +141,10 @@ underworld = Training(name="Underworld",children_category="Gear Option",skill="L
 underworld.addImplementation(lambda character_sheet: character_sheet._abstract_potions.update({'B':character_sheet._abstract_potions['B']+3}))
 ## add gear choices
 ugc1 = Item(name="A blade with the chem-pipes modification and choose 3 rounds of alchemical ammunition",abstract=False,gear_type="custom")
-ugc1.addImplementation(lambda character_sheet: character_sheet.weapons.append(Weapon(name="Poison Blade",reach=1,ap=1,special="This weapon may take alchemical ammunition as if it were a ranged weapon."))) # blade with chem-pipes
+poison_blade = Weapon(**getModel('model_weapons.json')["Blade"])
+poison_blade.name="Poison Blade"
+poison_blade.special.append("This weapon may take alchemical ammunition as if it were a ranged weapon.")
+ugc1.addImplementation(lambda character_sheet: character_sheet.weapons.append(poison_blade)) # blade with chem-pipes
 ugc1.addImplementation(lambda character_sheet: character_sheet._abstract_ammunition.update({'B':character_sheet._abstract_ammunition['B']+3})) # 3 rounds of alchemical ammunition
 underworld.addChild(ugc1) # add the complicated choice as a child
 underworld.addChild(Item(name="Sniper Rifle",gear_type="weapon"))

@@ -1,23 +1,40 @@
 {
 	"Long Arm":{
 		"name":"Long Arm",
-		"range":"100",
-		"accuracy":"5",
-		"ap":"1",
+		"range":100,
+		"reach":0,
+		"accuracy":5,
+		"ap":1,
 		"special":"Two-handed."
 	},
 	"Pistol":{
 		"name":"Pistol",
-		"range":"50",
-		"accuracy":"4",
-		"ap":"1",
-		"special":"Two-handed. Can be fired one-handed with -1 accuracy.Can be fired from a moving platform without penalty."
+		"range":50,
+		"reach":0,
+		"accuracy":4,
+		"ap":1,
+		"special":"Two-handed. Can be fired one-handed with -1 accuracy. Can be fired from a moving platform without penalty."
 	},
 	"Sniper Rifle":{
 		"name":"Sniper Rifle",
-		"range":"400",
-		"accuracy":"5",
-		"ap":"2",
+		"range":400,
+		"reach":0,
+		"accuracy":5,
+		"ap":2,
 		"special":"Two-handed. If a target is less than 50 yards away, this weapon has an accuracy of 2."
+	},
+	"Blade":{
+		"name":"Blade",
+		"range":0,
+		"reach":1,
+		"ap":1,
+		"special":"One-handed. Can be equipped even if also carrying a two-handed weapon."
+	},
+	"Bludgeon":{
+		"name":"Bludgeon",
+		"range":0,
+		"reach":1,
+		"ap":1,
+		"special":"One-handed."
 	}
 }

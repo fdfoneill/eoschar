@@ -24,7 +24,7 @@ setup(name='eoschar',
 	include_package_data=True,
 	# third-party dependencies
 	install_requires=[
-
+		"fpdf"
 		],
 	# tests
 	test_suite='nose.collector',
@@ -35,7 +35,8 @@ setup(name='eoschar',
 	# console scripts
 	entry_points = {
 		'console_scripts': [
-			'eoschar=eoschar.command_line:main'
+			'eoschar=eoschar.command_line:main',
+			'eoscharexample=eoschar.command_line:makeExample'
 			]
 		}
 	)

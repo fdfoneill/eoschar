@@ -10,12 +10,16 @@ Creating characters is always one of the most labor-intensive parts of playing a
 
 # Features
 
-The current version of `eoschar` works through a command-line interface. (Future versions will feature a graphic user interface.) The `eoschar` command takes several subcommands, including:
+The current version of `eoschar` works through a command-line interface. (Future versions will feature a graphic user interface.) The `eoschar` command opens the character creator main menu. It also takes several subcommands, including:
 
 * `new`: Start a new character
-* `load`: Load an existing character
+* `load`: Load an existing character (takes )
 
 # Code Example
+
+Lines beginning with the pound sign '#' are user entry.
+
+## Create a New Character
 
 ```
 > eoschar new
@@ -71,11 +75,34 @@ Choose an option:
 # 
 ```
 
+## Load an Existing Character
+
+```
+> eoschar load example_saved_character.txt
+Loading an existing character from file.
+Source file: example_saved_character.txt
+Loading an existing character from file.
+Source file: example_saved_character.txt
+Successfully loaded character 'Bathys' from file!
+
+MAIN MENU
+---------
+Current character: Bathys
+Choose an option:
+[0] New Character
+[1] Load Character from File
+[2] Save Character
+[3] Edit Character
+[4] Output Character Sheet to PDF
+[5] Exit (or type 'exit')
+# 
+```
+
 # How to Use
 
-Once the package is fully installed, call `eoschar new` from the command line. The interface will then guide you through the process of creating an Era of Silence character from scratch! You can exit the program at any time by typing 'exit.' To save an in-progress character, type 'save.'
+Once the package is fully installed, call `eoschar` from the command line to open the main menu. The interface will then guide you through the process of creating an Era of Silence character from scratch! You can exit the program at any time by typing 'exit.'
 
-Once you have created your character, you can save the data to a file as pickled text. Previously created characters can be loaded with the `eoschar load` command. Completed characters can also be saved as beautiful PDF character sheets, although this format does not allow for re-loading into `eoschar`.
+Once you have created your character, you can save the data to a text file. Previously created characters can be loaded with the `eoschar load` command. Completed characters can also be saved as beautiful PDF character sheets. Note, however, that a PDF sheet cannot be used for re-loading into `eoschar`.
 
 # License
 

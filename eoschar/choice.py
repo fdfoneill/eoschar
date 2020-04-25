@@ -598,6 +598,7 @@ class AssignAbstractGear(Choice):
 		self.ref_grenades = {"A":[],"B":[],"C":[]}
 		self.ref_ammunition = {"A":[],"B":[],"C":[]}
 		self.ref_weapons = {"Ranged":[],"Melee":[]}
+		self.ref_kits = {"A":[],"B":[],"C":[]}
 		# empty final weapon/gear list
 		self.weapons = []
 		self.gear = []

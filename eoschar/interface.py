@@ -221,6 +221,7 @@ class Interface:
 				for level in node.abstract_modifications.keys():
 					pass
 				# AMMUNITION
+				print(node.abstract_ammunition)
 				for level in node.abstract_ammunition.keys():
 					ammunitionOptions = node.ref_ammunition[level]
 					while node.abstract_ammunition[level] > 0:

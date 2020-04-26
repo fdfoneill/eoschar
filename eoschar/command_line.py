@@ -8,6 +8,7 @@ from .choice import Choice, Item
 from .options import trees as TREES
 from .interface import Interface
 from .sheetmaker import SheetMaker
+from .func import clearScreen
 from ._version import __version__
 import argparse
 
@@ -55,6 +56,7 @@ def main():
 
 	## if no command was selected, print
 	## general help
+	clearScreen()
 	try:
 		assert args.command
 	except:

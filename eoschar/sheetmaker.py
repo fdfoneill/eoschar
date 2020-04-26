@@ -2,6 +2,7 @@ import logging, os
 logging.basicConfig(level=os.environ.get("LOGLEVEL","INFO"))
 log = logging.getLogger(__name__)
 
+import math
 from fpdf import FPDF
 
 class SheetMaker:
@@ -210,7 +211,7 @@ class SheetMaker:
 		pdf.set_x(1.95)
 		pdf.cell(0.4,0.11,"Accuracy",align="C")
 		pdf.set_x(2.34)
-		pdf.cell(0.32,0.11,"AP",align="C")
+		pdf.cell(0.15,0.11,"AP",align="C")
 		#pdf.set_x(2.34)
 		pdf.cell(0.32,0.11,"Special")
 
@@ -392,7 +393,7 @@ class SheetMaker:
 		pdf.cell(0.4,line_height,border="R")
 		### ap_border
 		pdf.set_x(2.34)
-		pdf.cell(0.32,line_height,border="R")
+		pdf.cell(0.15,line_height,border="R")
 		## add each weapon
 		for weapon in self.sheet.weapons: # each one is a Weapon object
 			# name
@@ -415,11 +416,13 @@ class SheetMaker:
 			# accuracy
 			if weapon.accuracy == 0:
 				acc = "NA"
+			else:
+				acc = weapon.accuracy
 			pdf.set_x(1.95)
 			pdf.cell(0.4,0.12,str(acc),align="C",border="T")
 			# ap
 			pdf.set_x(2.34)
-			pdf.cell(0.32,0.12,str(weapon.ap),align="C",border="T")
+			pdf.cell(0.15,0.12,str(weapon.ap),align="C",border="T")
 			# special
 			if len(weapon.special) > 0:
 				specials = " ".join(weapon.special) 
@@ -427,16 +430,40 @@ class SheetMaker:
 				specials = " "
 			specials = specials.strip()
 			font_size = 8
-			cell_width = 2.31
-			max_rows = 3
-			line_length_adjust_factor = 0.2
+			row_height = 0.11
+			cell_width = 2.48
+			max_height = 0.2
+			line_length_adjust_factor = 0.05
 			pdf.set_font('Arial',size=font_size,style='')
-			while ((pdf.get_string_width(specials)+(line_length_adjust_factor*max_rows))/cell_width) > max_rows:
-				font_size -= 0.01
+			# METHOD A
+			# fits = False
+			# pdf_fake = FPDF()
+			# pdf_fake.add_page()
+			# pdf_fake.set_margins(0,0,0)
+			# pdf_fake.set_fill_color(0,0,0)
+			# pdf_fake.set_auto_page_break(False)
+			# while not fits:
+			# 	pdf_fake.set_font('Arial',size=font_size,style='')
+			# 	pdf_fake.set_xy(2.34,1.0)
+			# 	pdf_fake.multi_cell(cell_width,row_height,specials,border="T")
+			# 	diff = pdf_fake.get_y() - 1.0
+			# 	if diff <= max_height:
+			# 		fits = True
+			# 	else:
+			# 		font_size = font_size * 0.99
+			# 		row_height = row_height * 0.99
+			# pdf.set_font('Arial',size=font_size,style='')
+			# print(font_size)
+			# print(row_height)
+			# del pdf_fake
+			# METHOD B
+			while math.ceil(((pdf.get_string_width(specials)+(line_length_adjust_factor*2))/cell_width)) * row_height > max_height:
+				font_size = font_size * 0.99
+				row_height = row_height * 0.99
 				pdf.set_font('Arial',size=font_size,style='')
-			pdf.multi_cell(cell_width,0.11,specials,border="T")
+			# END METHODS
+			pdf.multi_cell(cell_width,row_height,specials,border="T")
 			pdf.ln(0.05)
-
 
 
 		########	

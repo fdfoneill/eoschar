@@ -256,6 +256,7 @@ class Interface:
 							print(f"Choose a level {levelSelection} modification to add to your {weapon.name}:")
 							modOptions = None
 							modOptions = node.ref_modifications[levelSelection]
+							modOptions = [m for m in modOptions if any([(p == weapon.type) for p in m.prerequisites])]
 							modOptions.append("No modification")
 							i,modSelection = chooseOne(modOptions)
 							if modSelection == False:

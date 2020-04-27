@@ -28,13 +28,13 @@
 		"range":0,
 		"reach":1,
 		"ap":1,
-		"special":"One-handed. Can be equipped even if also carrying a two-handed weapon."
+		"special":"Can be equipped even if also carrying a two-handed weapon."
 	},
 	"Bludgeon":{
 		"name":"Bludgeon",
 		"range":0,
 		"reach":1,
 		"ap":1,
-		"special":"One-handed."
+		"special":""
 	}
 }

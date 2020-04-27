@@ -31,7 +31,7 @@
 	},
 	"Gene-Lock":{
 		"name":"Gene-Lock",
-		"special":"This weapon is coded to its owner’s DNA. In anyone else’s hands, it is inert and will not fire.",
+		"special":"This weapon is coded to its owner's DNA. In anyone else's hands, it is inert and will not fire.",
 		"level":"A",
 		"prerequisites":["Long Arm","Pistol"]
 	},
@@ -64,7 +64,7 @@
 	},
 	"Paired":{
 		"name":"Paired",
-		"special":"These twin blades add one die to the wielder’s fighting pool. If used one-handed, the extra die is lost.",
+		"special":"These twin blades add one die to the wielder's fighting pool. If used one-handed, the extra die is lost.",
 		"level":"B",
 		"prerequisites":["Blade"]
 	},
@@ -91,7 +91,7 @@
 
 	"Overcharged Plas-Core":{
 		"name":"Overcharged Plas-Core",
-		"special":"This weapon cannot take alchemical rounds. However, if two or more 1’s are rolled when firing, the gun overheats and the  user takes an AP1 hit.",
+		"special":"This weapon cannot take alchemical rounds. However, if two or more 1's are rolled when firing, the gun overheats and the  user takes an AP1 hit.",
 		"level":"C",
 		"prerequisites":["Long Arm"]
 	},

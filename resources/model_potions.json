@@ -1,10 +1,46 @@
 [
 	{
+		"name":"Yender's Formula",
+		"level":"A"
+	},
+	{
+		"name":"Yender's Formula",
+		"level":"B"
+	},
+	{
 		"name":"Wizard's Select",
 		"level":"B"
 	},
 	{
-		"name":"Yender's Formula",
+		"name":"Waste",
+		"level":"B"
+	},
+	{
+		"name":"Blank",
+		"level":"B"
+	},
+	{
+		"name":"The Red",
+		"level":"B"
+	},
+	{
+		"name":"Cat's Form",
+		"level":"B"
+	},
+	{
+		"name":"Stoneskin Solution",
+		"level":"B"
+	},
+	{
+		"name":"Elek-ish",
+		"level":"B"
+	},
+	{
+		"name":"Chameleon",
+		"level":"B"
+	},
+	{
+		"name":"Combat Stimms",
 		"level":"B"
 	}
 ]

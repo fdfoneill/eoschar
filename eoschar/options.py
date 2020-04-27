@@ -144,7 +144,8 @@ ugc1 = Item(name="A blade with the chem-pipes modification and choose 3 rounds o
 poison_blade = Weapon(**getModel('model_weapons.json')["Blade"])
 poison_blade.name="Poison Blade"
 poison_blade.special.append("This weapon may take alchemical ammunition as if it were a ranged weapon.")
-ugc1.addImplementation(lambda character_sheet: character_sheet.weapons.append(poison_blade)) # blade with chem-pipes
+poison_blade.modifications['A'].append("Chem-Pipes")
+ugc1.addImplementation(lambda character_sheet: character_sheet._raw_weapons.append(poison_blade)) # blade with chem-pipes
 ugc1.addImplementation(lambda character_sheet: character_sheet._abstract_ammunition.update({'B':character_sheet._abstract_ammunition['B']+3})) # 3 rounds of alchemical ammunition
 underworld.addChild(ugc1) # add the complicated choice as a child
 underworld.addChild(Item(name="Sniper Rifle",gear_type="weapon"))
@@ -208,7 +209,7 @@ trees.append(focus)
 # Maybe: implement() each Choice *as* it's being added to CharacterSheet.data? Also could checkPrerequisites() at that
 # time. Then, when actually fully building, you flush() the sheet, which reloads it cleanly.
 
-skills = PointBuy(name="Skills",max_level=3,starting_level=0,categories=getModel('model_skills.json'),starting_points=5,points_per_level = {1:0,2:1,3:3},root_id=6)
+skills = PointBuy(name="Skills",max_level=3,starting_level=0,categories=getModel('model_skills.json'),starting_points=5,points_per_level = {1:0,2:1,3:2},root_id=6)
 trees.append(skills)
 
 

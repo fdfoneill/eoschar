@@ -193,7 +193,7 @@ class CharacterSheet:
 
 		# load gear assignments
 		## TODO
-		assign_abstract_gear = AssignAbstractGear()
+		assign_abstract_gear = AssignAbstractGear(name="Assign Abstract Gear")
 		assign_abstract_gear.assign(self)
 		assign_abstract_gear.gear += loadedPickle['assigned_gear']
 		for weapon_pickle in loadedPickle['weapon_pickles']:

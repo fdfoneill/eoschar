@@ -2,13 +2,14 @@ import logging, os
 logging.basicConfig(level=os.environ.get("LOGLEVEL","INFO"))
 log = logging.getLogger(__name__)
 
-import sys
+import importlib, sys
 from collections import namedtuple
 from .func import getYesNo
 from .charactersheet import CharacterSheet
 from .choice import Choice, Weapon
-from .options import trees as TREES
+from .options import buildTrees
 
+TREES = buildTrees()
 
 
 PROMPT = "# "
@@ -155,9 +156,12 @@ class Interface:
 				action = None
 				while keepGoing:
 					print("Current skill levels:")
+					skillList = []
 					for skill in node.categories.keys():
 						sLevel = node.categories[skill]['bought_levels']+node.categories[skill]['base_levels']
-						print(f"{skill}: {sLevel}")
+						#print(f"{skill}: {sLevel}")
+						skillList.append(f"{skill}: {sLevel}")
+					skillList.append(f"Switch to leveling skills {directionList[(direction+1)%2]}")
 					if node.current_points == 0 and direction ==0:
 						keepGoing = (not getYesNo("All points spent. Accept these skills?"))
 						if keepGoing:
@@ -165,33 +169,34 @@ class Interface:
 							action = "switched"
 					else:
 						if action is None:
-							pass
+							prompt = ''
 						elif action == 'switched':
-							print(f"You are now leveling skills {directionList[direction]}.")
+							prompt=f"You are now leveling skills {directionList[direction]}.\n"
 						else:
-							print(f"Successfully leveled {directionList[direction]} {action}!")
-						print(f"You have {node.current_points} skill points remaining.")
-						print(f"Enter name of skill to level {directionList[direction]}. To switch to leveling skills {directionList[(direction+1)%2]}, enter 'switch'.")
-						response = input(PROMPT)
+							prompt=f"Successfully leveled {directionList[direction]} {action}!\n"
+						prompt += f"You have {node.current_points} skill points remaining.\nChoose a skill to level {directionList[direction]}.\n# "
+						#response = input(PROMPT)
+						iResp, response = chooseOne(skillList,symbol=prompt)
 						# if the user asks to switch leveling directions
-						if response == 'switch':
-							direction = (direction+1) % 2
-							action = "switched"
-						# if the user asks to EXIT
-						elif response == 'exit':
+						if response == False:
 							if getYesNo("Abort character creation process?"):
 								return False
+						elif response.split()[0] == 'Switch':
+							direction = (direction+1) % 2
+							action = "switched"
 						# valid skill selection
-						elif response in node.categories.keys():
-							# level up or down
-							if direction == 0:
-								worked = node.levelUp(response)
-							elif direction == 1:
-								worked = node.levelDown(response)
-							action = response if worked else None
-						# INVALID selection
 						else:
-							print(f"Invalid selection '{response}'. Expected a skill name, 'switch', or 'exit'.")
+							response = response.split(":")[0]
+							if response in node.categories.keys():
+								# level up or down
+								if direction == 0:
+									worked = node.levelUp(response)
+								elif direction == 1:
+									worked = node.levelDown(response)
+								action = response if worked else None
+							# INVALID selection
+							else:
+								print(f"Invalid selection '{response}'. Expected a skill id, 'switch', or 'exit'.")
 					continue
 				character_sheet.apply(node)
 				character_sheet.data.append(node)
@@ -348,6 +353,7 @@ class Interface:
 	def createNewCharacter(self)->bool:
 		"""Walks user through the steps of creating a new character from scratch"""
 		self.sheet = CharacterSheet()
+		TREES = buildTrees()
 		print("Creating new character from scratch.\n\nYou will be guided through the steps of character creations. At each step, you will be presented with a series of options.\nTo exit character creator, enter 'exit'")
 		for tree in TREES:
 			if self.runTree(tree,self.sheet) == False:
@@ -402,7 +408,7 @@ class Interface:
 		menu_options.append(MenuOption("Create New Character",self.createNewCharacter,[]))
 		menu_options.append(MenuOption("Load Character from File",self.loadCharacter,["path to input character data file"]))
 		menu_options.append(MenuOption("Save Character",self.saveCharacter,["path to output character data file"]))
-		menu_options.append(MenuOption("Edit Character",self.editCharacter,[]))
+		menu_options.append(MenuOption("Edit Character (COMING SOON)",self.editCharacter,[]))
 
 		menu_options.append(MenuOption("Output Character Sheet to PDF",self.printCharacter,["path to output PDF file"]))
 		menu_options.append(MenuOption("Exit (or type 'exit')",sys.exit,[]))

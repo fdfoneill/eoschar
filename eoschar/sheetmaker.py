@@ -197,23 +197,34 @@ class SheetMaker:
 		# add Weapons
 		## box
 		pdf.set_xy(0.62,7.18)
-		pdf.cell(4.35,1.65,border=1)
+		w_total_width = 4.35
+		pdf.cell(w_total_width,1.65,border=1)
 		## label
 		pdf.set_xy(0.64,7.2)
 		pdf.cell(0.8,0.2,"Weapons")
 		## column_titles
 		pdf.set_font('Times',size=6,style="I")
 		pdf.set_y(7.45)
-		pdf.set_x(0.62)
-		pdf.cell(0.82,0.11,"Name")
-		pdf.set_x(1.44)
-		pdf.cell(0.5,0.11,"Range/Reach",align="C")
-		pdf.set_x(1.95)
-		pdf.cell(0.4,0.11,"Accuracy",align="C")
-		pdf.set_x(2.34)
-		pdf.cell(0.15,0.11,"AP",align="C")
+		w_name_x = 0.62
+		w_name_width = 0.82
+		pdf.set_x(w_name_x)
+		pdf.cell(w_name_width,0.11,"Name")
+		w_range_x = w_name_x + w_name_width
+		w_range_width = 0.48
+		pdf.set_x(w_range_x)
+		pdf.cell(w_range_width,0.11,"Range/Reach",align="C")
+		w_accuracy_x = w_range_x + w_range_width
+		w_accuracy_width = 0.35
+		pdf.set_x(w_accuracy_x)
+		pdf.cell(w_accuracy_width,0.11,"Accuracy",align="C")
+		#w_ap_x = 2.28
+		w_ap_x = w_accuracy_x+w_accuracy_width
+		w_ap_width = 0.17
+		pdf.set_x(w_ap_x)
+		pdf.cell(w_ap_width,0.11,"AP",align="C")
 		#pdf.set_x(2.34)
-		pdf.cell(0.32,0.11,"Special")
+		w_special_width = w_total_width - (w_name_width+w_range_width+w_accuracy_width+w_ap_width)
+		pdf.cell(w_special_width,0.11,"Special")
 
 		# reset box label font
 		pdf.set_font('Times',size=12,style="B")
@@ -383,59 +394,100 @@ class SheetMaker:
 		line_height = 1.26
 		pdf.set_y(7.57)
 		### name_border
-		pdf.set_x(0.62)
-		pdf.cell(0.82,line_height,border="R")
+		pdf.set_x(w_name_x)
+		pdf.cell(w_name_width,line_height,border="R")
 		### range_border
-		pdf.set_x(1.44)
-		pdf.cell(0.5,line_height,border="R")
+		pdf.set_x(w_range_x)
+		pdf.cell(w_range_width,line_height,border="R")
 		### accuracy_border
-		pdf.set_x(1.95)
-		pdf.cell(0.4,line_height,border="R")
+		pdf.set_x(w_accuracy_x)
+		pdf.cell(w_accuracy_width,line_height,border="R")
 		### ap_border
-		pdf.set_x(2.34)
-		pdf.cell(0.15,line_height,border="R")
+		pdf.set_x(w_ap_x)
+		pdf.cell(w_ap_width,line_height,border="R")
 		## add each weapon
+		pdf.set_font('Arial',size=8,style='')
+		### calculate how to share vertical space
+		size_index = [] # list of dicts: {"textLen":int,"textPct":int,"fontPoint":int,"cellY":int}
+		totalTextLen = 0
+		maxTotalHeight = 1.25
+		special_cell_width = w_special_width
+		for weapon in self.sheet.weapons: # individual info
+			if len(weapon.special) > 0:
+				specials = " ".join(weapon.special) 
+			else:
+				specials = " "
+			textLen = pdf.get_string_width(specials)
+			if textLen < special_cell_width:
+				textLen = special_cell_width
+			totalTextLen += textLen
+			size_index.append({"text":specials,"textLen":textLen,"textPct":1.0,"maxHeight":0,"fontPoint":8,"cellY":0.11})
+		for d in size_index:
+			d['textPct'] = d['textLen']/totalTextLen
+			d['maxHeight'] = d['textPct'] * maxTotalHeight
+		for d in size_index:
+			fits = False
+			while not fits:
+				fake_pdf = FPDF("p","in","Letter")
+				fake_pdf.add_page()
+				fake_pdf.set_margins(0,0,0)
+				fake_pdf.set_fill_color(0,0,0)
+				fake_pdf.set_auto_page_break(False)
+				fake_pdf.set_font('Arial',size=d["fontPoint"])
+				## DO CALC
+				fake_pdf.set_xy(1,1)
+				fake_pdf.multi_cell(special_cell_width,d['cellY'],d['text'])
+				if fake_pdf.get_y() - 1 <= d['maxHeight']:
+					fits = True
+				else:
+					d['fontPoint'] = d['fontPoint'] - 0.01
+				del fake_pdf
+			d['cellY'] = d["fontPoint"] / 72
+
+		### do the writing
+		i = 0
 		for weapon in self.sheet.weapons: # each one is a Weapon object
 			# name
 			font_size = 8
-			name_cell_width = 0.82
 			pdf.set_font('Arial',size=font_size,style='')
-			while pdf.get_string_width(weapon.name) > name_cell_width:
-				font_size -= 0.01
+			while pdf.get_string_width(weapon.name) > (w_name_width-0.1):
+				font_size -= 0.05
 				pdf.set_font('Arial',size=font_size,style='')
-			pdf.set_x(0.62)
-			pdf.cell(name_cell_width,0.12,weapon.name,align="L",border="T")
+			pdf.set_x(w_name_x)
+			pdf.cell(w_name_width,0.12,weapon.name,align="L",border="T")
 			# range / reach
 			pdf.set_font('Arial',size=8,style='')
 			if (weapon.range is None) or (weapon.range <= 0):
 				r =weapon.reach
 			else:
 				r = weapon.range
-			pdf.set_x(1.44)
-			pdf.cell(0.5,0.12,str(r),align="C",border="T")
+			pdf.set_x(w_range_x)
+			pdf.cell(w_range_width,0.12,str(r),align="C",border="T")
 			# accuracy
 			if weapon.accuracy == 0:
 				acc = "NA"
 			else:
 				acc = weapon.accuracy
-			pdf.set_x(1.95)
-			pdf.cell(0.4,0.12,str(acc),align="C",border="T")
+			pdf.set_x(w_accuracy_x)
+			pdf.cell(w_accuracy_width,0.12,str(acc),align="C",border="T")
 			# ap
-			pdf.set_x(2.34)
-			pdf.cell(0.15,0.12,str(weapon.ap),align="C",border="T")
-			# special
-			if len(weapon.special) > 0:
-				specials = " ".join(weapon.special) 
-			else:
-				specials = " "
-			specials = specials.strip()
-			font_size = 8
-			row_height = 0.11
-			cell_width = 2.48
-			max_height = 0.2
-			line_length_adjust_factor = 0.05
+			pdf.set_x(w_ap_x)
+			pdf.cell(w_ap_width,0.12,str(weapon.ap),align="C",border="T")
+			# special 
+			index = size_index[i] # get meta-info about size calculated above
+			specials = index['text']
+			font_size = index['fontPoint']
+			row_height = index['cellY']
+			cell_width = special_cell_width
 			pdf.set_font('Arial',size=font_size,style='')
 			# METHOD A
+			# if len(weapon.special) > 0:
+			# 	specials = " ".join(weapon.special) 
+			# else:
+			# 	specials = " "
+			# specials = specials.strip()
+			# max_height = 0.2
+			# line_length_adjust_factor = 0.05
 			# fits = False
 			# pdf_fake = FPDF()
 			# pdf_fake.add_page()
@@ -457,13 +509,14 @@ class SheetMaker:
 			# print(row_height)
 			# del pdf_fake
 			# METHOD B
-			while math.ceil(((pdf.get_string_width(specials)+(line_length_adjust_factor*2))/cell_width)) * row_height > max_height:
-				font_size = font_size * 0.99
-				row_height = row_height * 0.99
-				pdf.set_font('Arial',size=font_size,style='')
+			# while math.ceil(((pdf.get_string_width(specials)+(line_length_adjust_factor*2))/cell_width)) * row_height > max_height:
+			# 	font_size = font_size * 0.99
+			# 	row_height = row_height * 0.99
+			# 	pdf.set_font('Arial',size=font_size,style='')
 			# END METHODS
 			pdf.multi_cell(cell_width,row_height,specials,border="T")
 			pdf.ln(0.05)
+			i += 1
 
 
 		########	

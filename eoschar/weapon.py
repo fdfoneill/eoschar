@@ -121,7 +121,7 @@ class Modification:
 		try:
 			# actually do the application
 			weapon.range = self.range(weapon.range)
-			weapon.reach = self.range(weapon.reach)
+			weapon.reach = self.reach(weapon.reach)
 			weapon.ap = self.range(weapon.ap)
 			weapon.accuracy = self.range(weapon.accuracy)
 			if self.special is not None:
